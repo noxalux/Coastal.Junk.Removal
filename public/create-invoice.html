@@ -1,0 +1,155 @@
+<!-- File: create-invoice.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Create Invoice | Coastal Junk Removal</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="invoice-builder">
+    <section>
+      <h1>Create New Invoice</h1>
+      <form action="/create-invoice" method="POST" enctype="multipart/form-data">
+        <fieldset>
+          <legend>Client Information</legend>
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" name="phone" required>
+
+          <label for="address">Service Address</label>
+          <input type="text" id="address" name="address" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Service Details</legend>
+
+          <label for="service">Service Type</label>
+          <select id="service" name="service">
+            <option value="junk">Junk Removal</option>
+            <option value="moving">Moving Services</option>
+          </select>
+
+          <label for="load">Truck Load</label>
+          <select id="load" name="load">
+            <option value="1/4">1/4 Load - $60</option>
+            <option value="1/2">1/2 Load - $90</option>
+            <option value="full">Full Load - $150</option>
+          </select>
+
+          <label for="loadQty">Truck Load Quantity</label>
+          <input type="number" id="loadQty" name="loadQty" min="1" value="1">
+
+          <label for="miles">Travel Distance (miles)</label>
+          <input type="number" id="miles" name="miles" min="0" value="0">
+        </fieldset>
+
+        <fieldset>
+          <legend>Extras</legend>
+          <label for="landfillCount">Landfill Trips ($125/trip)</label>
+          <input type="number" id="landfillCount" name="landfillCount" min="0" value="1">
+
+          <label for="cardFee">Apply 3% Card Fee?</label>
+          <input type="checkbox" id="cardFee" name="cardFee" checked>
+
+          <label for="paymentTerms">Payment Terms</label>
+          <select id="paymentTerms" name="paymentTerms">
+            <option value="due">Due Upon Receipt</option>
+            <option value="net7">Net 7</option>
+            <option value="net15">Net 15</option>
+            <option value="net30">Net 30</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Custom Charges</legend>
+          <div id="customItems">
+            <div class="custom-line">
+              <input type="text" name="itemName[]" placeholder="Service/Item" />
+              <input type="number" name="itemQty[]" placeholder="Qty" value="1" min="1" />
+              <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01" />
+            </div>
+          </div>
+          <button type="button" onclick="addLineItem()">Add Another Charge</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Photos</legend>
+          <label for="photos">Upload up to 3 Photos</label>
+          <input type="file" id="photos" name="photos" accept="image/*" multiple>
+        </fieldset>
+
+        <fieldset>
+          <legend>Customer Signature</legend>
+          <canvas id="signaturePad" width="300" height="150" style="border:1px solid #ccc;"></canvas>
+          <input type="hidden" name="signatureData" id="signatureData">
+          <button type="button" onclick="clearSignature()">Clear Signature</button>
+        </fieldset>
+
+        <fieldset style="display:none;">
+          <legend>Internal Only: Trip Expenses</legend>
+          <label for="fuelCost">Fuel Cost</label>
+          <input type="number" name="fuelCost" step="0.01" value="0">
+
+          <label for="tolls">Toll Expenses</label>
+          <input type="number" name="tolls" step="0.01" value="0">
+
+          <label for="maintenance">Maintenance</label>
+          <input type="number" name="maintenance" step="0.01" value="0">
+
+          <label for="notes">Admin Notes</label>
+          <textarea name="notes" rows="3"></textarea>
+        </fieldset>
+
+        <button type="submit">Generate Invoice</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    const form = document.querySelector('form');
+    form.addEventListener('submit', () => {
+      const canvas = document.getElementById('signaturePad');
+      document.getElementById('signatureData').value = canvas.toDataURL();
+    });
+
+    function clearSignature() {
+      const canvas = document.getElementById('signaturePad');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function addLineItem() {
+      const wrapper = document.getElementById('customItems');
+      const row = document.createElement('div');
+      row.classList.add('custom-line');
+      row.innerHTML = `
+        <input type="text" name="itemName[]" placeholder="Service/Item" />
+        <input type="number" name="itemQty[]" value="1" min="1" />
+        <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01" />
+      `;
+      wrapper.appendChild(row);
+    }
+
+    // Enable drawing on canvas
+    const canvas = document.getElementById('signaturePad');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mousemove', e => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+      ctx.stroke();
+    });
+  </script>
+</body>
+</html>

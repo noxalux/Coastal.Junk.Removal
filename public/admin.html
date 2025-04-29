@@ -1,0 +1,97 @@
+<!-- File: admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Coastal Junk Removal</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="admin-dashboard">
+    <header>
+      <h1>Admin Dashboard</h1>
+      <a href="/logout">Logout</a>
+    </header>
+
+    <section>
+      <h2>Invoices</h2>
+
+      <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" style="margin-bottom: 10px; padding: 8px; width: 100%;">
+
+      <table id="invoiceTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Invoices will load here -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    let invoices = [];
+    let paidInvoices = new Set();
+
+    async function loadInvoices() {
+      const res = await fetch('/data/invoices.json');
+      invoices = await res.json();
+      renderInvoices(invoices);
+    }
+
+    function renderInvoices(data) {
+      const tbody = document.querySelector('#invoiceTable tbody');
+      tbody.innerHTML = data.map(inv => `
+        <tr id="row-${inv.id}">
+          <td>${inv.id} ${paidInvoices.has(inv.id) ? '✅' : ''}</td>
+          <td>${inv.name}</td>
+          <td>$${inv.total.toFixed(2)}</td>
+          <td>${new Date(inv.date).toLocaleDateString()}</td>
+          <td>
+            <a href="/invoice.html?id=${inv.id}" target="_blank">View</a>
+            <button onclick="copyLink('${inv.id}')">Copy Link</button>
+            <button onclick="markPaid('${inv.id}')">Mark Paid</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function copyLink(id) {
+      const url = `${window.location.origin}/invoice.html?id=${id}`;
+      navigator.clipboard.writeText(url)
+        .then(() => alert('Invoice link copied!'))
+        .catch(err => console.error('Error copying link', err));
+    }
+
+    function markPaid(id) {
+      paidInvoices.add(id);
+      const row = document.getElementById(`row-${id}`);
+      if (row) {
+        row.style.backgroundColor = '#d4edda';
+        row.style.color = '#155724';
+      }
+      renderInvoices(invoices);
+      alert(`Invoice ${id} manually marked as paid!`);
+    }
+
+    function filterInvoices() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = invoices.filter(inv =>
+        inv.name.toLowerCase().includes(query) ||
+        inv.id.toLowerCase().includes(query) ||
+        new Date(inv.date).toLocaleDateString().includes(query)
+      );
+      renderInvoices(filtered);
+    }
+
+    loadInvoices();
+  </script>
+</body>
+</html>

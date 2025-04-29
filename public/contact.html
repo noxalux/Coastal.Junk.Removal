@@ -1,0 +1,69 @@
+<!-- File: contact.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Coastal Junk Removal">
+  <title>Get an Instant Junk Removal Quote | Coastal Junk Removal</title>
+  <meta name="description" content="Upload 3 photos of your junk and receive a fast, AI-powered estimate. Coastal Junk Removal offers premium junk hauling services in Newport News VA.">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <a href="index.html"><img src="assets/logo.png" alt="Coastal Junk Removal Logo"></a>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="junk-removal.html">Junk Removal</a></li>
+        <li><a href="moving-services.html">Moving Services</a></li>
+        <li><a href="service-areas.html">Service Areas</a></li>
+        <li><a href="testimonials.html">Testimonials</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h1>Request Your Instant Junk Removal Estimate</h1>
+      <p>Upload 3 photos of your junk from different angles. Our AI will instantly review and return an estimate personalized to your project.</p>
+    </section>
+
+    <form action="/submit-quote" method="POST" enctype="multipart/form-data">
+      <fieldset>
+        <legend>Upload Photos</legend>
+        <label for="photo1">Photo 1:</label>
+        <input type="file" id="photo1" name="photo1" accept="image/*" required>
+        <label for="photo2">Photo 2:</label>
+        <input type="file" id="photo2" name="photo2" accept="image/*" required>
+        <label for="photo3">Photo 3:</label>
+        <input type="file" id="photo3" name="photo3" accept="image/*" required>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your Information</legend>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" required>
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
+        <label for="address">Pickup Address:</label>
+        <input type="text" id="address" name="address" placeholder="123 Main St, Newport News, VA" required>
+        <label for="description">Description of Items:</label>
+        <textarea id="description" name="description" placeholder="Briefly describe the items you need removed..." rows="4" required></textarea>
+      </fieldset>
+
+      <button type="submit">Submit Photos & Request Quote</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 Coastal Junk Removal. Luxury junk removal and hauling services for Newport News and surrounding areas. Fast. Eco-friendly. Professional.</p>
+  </footer>
+</body>
+</html>
