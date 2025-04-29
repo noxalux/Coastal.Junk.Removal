@@ -7,12 +7,13 @@ const invoiceRoutes = require('./routes/invoice');
 const checkoutRoutes = require('./routes/checkout');
 const expenseRoutes = require('./routes/expense');
 const updateNoteRoute = require('./routes/update-note');
+const signatureRoute = require('./routes/signature');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
@@ -60,6 +61,7 @@ app.use('/', invoiceRoutes);
 app.use('/', checkoutRoutes);
 app.use('/', expenseRoutes);
 app.use('/', updateNoteRoute);
+app.use('/', signatureRoute);
 
 // Default route
 app.get('/', (req, res) => {

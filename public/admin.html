@@ -1,23 +1,36 @@
-<!-- File: admin.html -->
+<!-- File: /public/admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard | Coastal Junk Removal</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
+  <script>
+    if (sessionStorage.getItem('isAdmin') !== 'true') {
+      window.location.href = '/login.html';
+    }
+  </script>
+
   <main class="admin-dashboard">
     <header>
       <h1>Admin Dashboard</h1>
-      <a href="/logout">Logout</a>
+      <a href="#" onclick="logout()">Logout</a>
     </header>
 
     <section>
+      <div style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
+        <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" style="padding: 8px; width: 70%;">
+        <select id="filterStatus" onchange="filterInvoices()" style="padding: 8px; width: 30%;">
+          <option value="all">All Invoices</option>
+          <option value="paid">Paid Only</option>
+          <option value="unpaid">Unpaid Only</option>
+        </select>
+        <button onclick="resetFilters()" style="padding: 8px;">Reset Filters</button>
+      </div>
       <h2>Invoices</h2>
-
-      <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" style="margin-bottom: 10px; padding: 8px; width: 100%;">
 
       <table id="invoiceTable">
         <thead>
@@ -26,6 +39,7 @@
             <th>Client</th>
             <th>Amount</th>
             <th>Date</th>
+            <th>Signature</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -55,6 +69,9 @@
           <td>$${inv.total.toFixed(2)}</td>
           <td>${new Date(inv.date).toLocaleDateString()}</td>
           <td>
+            <img src="/signatures/${inv.id}.png" alt="Signature" style="height:50px;cursor:pointer;" onclick="window.open('/signatures/${inv.id}.png', '_blank')">
+          </td>
+          <td>
             <a href="/invoice.html?id=${inv.id}" target="_blank">View</a>
             <button onclick="copyLink('${inv.id}')">Copy Link</button>
             <button onclick="markPaid('${inv.id}')">Mark Paid</button>
@@ -81,14 +98,34 @@
       alert(`Invoice ${id} manually marked as paid!`);
     }
 
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('filterStatus').value = 'all';
+      renderInvoices(invoices);
+    }
+
     function filterInvoices() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = invoices.filter(inv =>
-        inv.name.toLowerCase().includes(query) ||
-        inv.id.toLowerCase().includes(query) ||
-        new Date(inv.date).toLocaleDateString().includes(query)
-      );
+      const statusFilter = document.getElementById('filterStatus').value;
+
+      const filtered = invoices.filter(inv => {
+        const matchesQuery = inv.name.toLowerCase().includes(query) ||
+                             inv.id.toLowerCase().includes(query) ||
+                             new Date(inv.date).toLocaleDateString().includes(query);
+        const isPaid = paidInvoices.has(inv.id);
+
+        if (statusFilter === 'paid' && !isPaid) return false;
+        if (statusFilter === 'unpaid' && isPaid) return false;
+
+        return matchesQuery;
+      });
+
       renderInvoices(filtered);
+    }
+
+    function logout() {
+      sessionStorage.removeItem('isAdmin');
+      window.location.href = '/login.html';
     }
 
     loadInvoices();

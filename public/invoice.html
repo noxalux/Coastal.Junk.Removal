@@ -1,112 +1,129 @@
-<!-- File: invoice.html -->
+<!-- File: /public/invoice.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Invoice | Coastal Junk Removal</title>
-  <meta name="description" content="Service invoice from Coastal Junk Removal - luxury junk hauling and moving in Newport News VA.">
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <main class="invoice-container">
-    <section class="invoice-header">
-      <img src="assets/logo.png" alt="Coastal Junk Removal Logo" class="invoice-logo">
-      <h1>Service Invoice</h1>
-      <form action="/create-checkout-session" method="POST">
-        <input type="hidden" name="invoiceId" id="invoiceId" value="">
-        <button type="submit">Pay This Invoice</button>
-      </form>
-      <div class="invoice-actions">
-        <button onclick="copyInvoiceLink()">Copy Invoice Link</button>
-        <button onclick="window.print()">Download PDF</button>
+<main class="invoice-container">
+  <section class="invoice-header">
+    <img src="/assets/logo.png" alt="Coastal Junk Removal Logo" class="invoice-logo" />
+    <h1>Service Invoice</h1>
+    <form action="/create-checkout-session" method="POST">
+      <input type="hidden" name="invoiceId" id="invoiceId" value="">
+      <button type="submit" disabled>Pay This Invoice</button>
+    </form>
+    <div class="invoice-actions">
+      <button onclick="copyInvoiceLink()">Copy Invoice Link</button>
+      <button onclick="window.print()">Download PDF</button>
+    </div>
+  </section>
+
+  <section id="invoice-content">
+    <!-- Invoice content populated via JS -->
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Coastal Junk Removal. Professional Service. Transparent Pricing.</p>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>
+<script>
+const invoiceId = new URLSearchParams(window.location.search).get('id');
+document.getElementById('invoiceId').value = invoiceId;
+
+async function fetchInvoice() {
+  if (!invoiceId) return;
+  const res = await fetch(`/data/invoices.json`);
+  const invoices = await res.json();
+  const invoice = invoices.find(inv => inv.id === invoiceId);
+  if (!invoice) return alert("Invoice not found.");
+
+  const content = document.getElementById('invoice-content');
+  content.innerHTML = `
+    <p><strong>Invoice #:</strong> ${invoice.id}</p>
+    <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+    <p><strong>Client:</strong> ${invoice.name}</p>
+    <p><strong>Email:</strong> ${invoice.email}</p>
+    <p><strong>Phone:</strong> ${invoice.phone}</p>
+    <p><strong>Service Address:</strong> ${invoice.address}</p>
+    <p><strong>Service Type:</strong> ${invoice.service}</p>
+    <p><strong>Payment Terms:</strong> ${invoice.paymentTerms}</p>
+    <hr>
+    <table>
+      <thead><tr><th>Item</th><th>Total</th></tr></thead>
+      <tbody>
+        ${invoice.breakdown.map(i => `<tr><td>${i.label}</td><td>$${i.amount.toFixed(2)}</td></tr>`).join('')}
+      </tbody>
+      <tfoot><tr><th>Total</th><th>$${invoice.total.toFixed(2)}</th></tr></tfoot>
+    </table>
+    ${invoice.photos?.length ? `<h3>Job Photos</h3><div class="photo-grid">${invoice.photos.map(p => `<img src="${p}" class="photo-thumb">`).join('')}</div>` : ''}
+    ${invoice.signature ? `<h3>Customer Signature</h3><img src="${invoice.signature}" class="signature-img">` : ''}
+    <hr>
+    <p><strong>Internal Notes</strong></p>
+    <ul>
+      <li><strong>Fuel:</strong> $${invoice.tripExpenses?.fuelCost?.toFixed(2) || 0}</li>
+      <li><strong>Tolls:</strong> $${invoice.tripExpenses?.tolls?.toFixed(2) || 0}</li>
+      <li><strong>Maintenance:</strong> $${invoice.tripExpenses?.maintenance?.toFixed(2) || 0}</li>
+      <li><strong>Admin Notes:</strong> ${invoice.tripExpenses?.notes || '-'}</li>
+    </ul>
+  `;
+
+  if (!invoice.signature) document.body.appendChild(modal);
+}
+fetchInvoice();
+
+function copyInvoiceLink() {
+  const url = window.location.href;
+  navigator.clipboard.writeText(url).then(() => alert('Invoice link copied to clipboard!'));
+}
+
+const modal = document.createElement('div');
+modal.innerHTML = `
+  <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000a;display:flex;align-items:center;justify-content:center;z-index:1000;">
+    <div style="background:#fff;padding:2rem;border-radius:10px;max-width:500px;width:90%;">
+      <h3>Please Sign Before Proceeding</h3>
+      <canvas id="signature-pad" width="400" height="200" style="border:1px solid #ccc;"></canvas>
+      <div style="margin-top:1rem;text-align:right;">
+        <button id="clearSig">Clear</button>
+        <button id="submitSig" disabled>Confirm Signature</button>
       </div>
-    </section>
+    </div>
+  </div>
+`;
 
-    <section id="invoice-content">
-      <!-- Invoice content populated via JS -->
-    </section>
+const signaturePad = new SignaturePad(modal.querySelector('#signature-pad'));
+const submitBtn = modal.querySelector('#submitSig');
+const clearBtn = modal.querySelector('#clearSig');
+const payBtn = document.querySelector('form button[type="submit"]');
+payBtn.disabled = true;
 
-    <footer>
-      <p>&copy; 2024 Coastal Junk Removal. Professional Service. Transparent Pricing.</p>
-    </footer>
-  </main>
+signaturePad.onEnd = () => {
+  submitBtn.disabled = signaturePad.isEmpty();
+};
 
-  <script>
-    async function fetchInvoice() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
-      if (!id) return;
-      const res = await fetch(`/data/invoices.json`);
-      const invoices = await res.json();
-      const invoice = invoices.find(inv => inv.id === id);
-      if (!invoice) return;
+clearBtn.onclick = () => signaturePad.clear();
 
-      document.getElementById('invoiceId').value = id;
-
-      const subtotal = invoice.total;
-      const salesTax = subtotal * 0.06;
-      const grandTotal = subtotal + salesTax;
-
-      const content = document.getElementById('invoice-content');
-      content.innerHTML = `
-        <p><strong>Invoice #:</strong> ${invoice.id}</p>
-        <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
-        <p><strong>Client:</strong> ${invoice.name}</p>
-        <p><strong>Email:</strong> ${invoice.email}</p>
-        <p><strong>Phone:</strong> ${invoice.phone}</p>
-        <p><strong>Service Address:</strong> ${invoice.address}</p>
-        <p><strong>Service Type:</strong> ${invoice.service}</p>
-        <p><strong>Payment Terms:</strong> ${invoice.paymentTerms}</p>
-        <hr>
-        <table>
-          <thead>
-            <tr><th>Item</th><th>Total</th></tr>
-          </thead>
-          <tbody>
-            ${invoice.breakdown.map(i => `<tr><td>${i.label}</td><td>$${i.amount.toFixed(2)}</td></tr>`).join('')}
-          </tbody>
-          <tfoot>
-            <tr><th>Subtotal</th><th>$${subtotal.toFixed(2)}</th></tr>
-            <tr><th>Sales Tax (6%)</th><th>$${salesTax.toFixed(2)}</th></tr>
-            <tr><th>Grand Total</th><th>$${grandTotal.toFixed(2)}</th></tr>
-          </tfoot>
-        </table>
-
-        ${invoice.photos?.length ? `
-          <h3>Job Photos</h3>
-          <div class="photo-grid">
-            ${invoice.photos.map(p => `<img src="${p}" class="photo-thumb">`).join('')}
-          </div>
-        ` : ''}
-
-        ${invoice.signature ? `
-          <h3>Customer Signature</h3>
-          <img src="${invoice.signature}" class="signature-img">
-        ` : ''}
-
-        <hr>
-        <p><strong>Internal Notes</strong></p>
-        <ul>
-          <li><strong>Fuel:</strong> $${invoice.tripExpenses?.fuelCost?.toFixed(2) || 0}</li>
-          <li><strong>Tolls:</strong> $${invoice.tripExpenses?.tolls?.toFixed(2) || 0}</li>
-          <li><strong>Maintenance:</strong> $${invoice.tripExpenses?.maintenance?.toFixed(2) || 0}</li>
-          <li><strong>Admin Notes:</strong> ${invoice.tripExpenses?.notes || '-'}</li>
-        </ul>
-      `;
-    }
-
-    fetchInvoice();
-
-    function copyInvoiceLink() {
-      const url = window.location.href;
-      navigator.clipboard.writeText(url).then(() => {
-        alert('Invoice link copied to clipboard!');
-      }).catch(err => {
-        console.error('Failed to copy link', err);
-      });
-    }
-  </script>
+submitBtn.onclick = async () => {
+  const dataURL = signaturePad.toDataURL();
+  const res = await fetch('/save-signature', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ invoiceId, signature: dataURL })
+  });
+  if (res.ok) {
+    modal.remove();
+    payBtn.disabled = false;
+  } else {
+    alert('Error saving signature. Please try again.');
+  }
+};
+</script>
 </body>
 </html>
