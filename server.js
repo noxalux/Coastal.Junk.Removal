@@ -12,6 +12,24 @@ const deleteInvoiceRoute = require('./routes/delete-invoice'); // ✅ NEW
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const path = require("path");
+
+// Protect admin.html with session check
+app.use("/admin.html", (req, res, next) => {
+  if (req.session.authenticated) {
+    return next();
+  }
+  return res.redirect("/login.html");
+});
+
+// Optional: Protect create-invoice page too
+app.use("/create-invoice.html", (req, res, next) => {
+  if (req.session.authenticated) {
+    return next();
+  }
+  return res.redirect("/login.html");
+});
+
 
 // Middleware
 app.use(express.json({ limit: '10mb' }));
