@@ -1,13 +1,14 @@
 <!-- File: /public/admin.html -->
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | Coastal Junk Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard | Coastal Junk Removal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="/css/styles.css" rel="stylesheet"/>
+<style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -117,35 +118,37 @@
   </style>
 </head>
 <body>
+
 <header class="navbar">
-  <div class="logo">Coastal Junk Admin</div>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <nav class="nav-links" id="navMenu">
-    <a href="/admin.html">Dashboard</a>
-    <a href="/create-invoice.html">New Invoice</a>
-    <a href="/index.html">Home</a>
-    <a href="/logout">Logout</a>
-  </nav>
+<a class="logo" href="/index.html">
+<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
+</a>
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="nav-links" id="navMenu">
+<a href="/index.html">Home</a>
+<a href="/junk-removal.html">Junk Removal</a>
+<a href="/moving-services.html">Moving Services</a>
+<a href="/contact.html">Contact</a>
+</nav>
 </header>
+
 <main>
-  <h1>Admin Dashboard</h1>
-  <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()">
-  <select id="filterStatus" onchange="filterInvoices()">
-    <option value="all">All Invoices</option>
-    <option value="paid">Paid Only</option>
-    <option value="unpaid">Unpaid Only</option>
-  </select>
-  <button onclick="resetFilters()">Reset Filters</button>
-  <table id="invoiceTable">
-    <thead>
-      <tr><th>ID</th><th>Client</th><th>Amount</th><th>Date</th><th>Actions</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+<h1>Admin Dashboard</h1>
+<input id="searchInput" onkeyup="filterInvoices()" placeholder="Search by Client, ID or Date" type="text"/>
+<select id="filterStatus" onchange="filterInvoices()">
+<option value="all">All Invoices</option>
+<option value="paid">Paid Only</option>
+<option value="unpaid">Unpaid Only</option>
+</select>
+<button onclick="resetFilters()">Reset Filters</button>
+<table id="invoiceTable">
+<thead>
+<tr><th>ID</th><th>Client</th><th>Amount</th><th>Date</th><th>Actions</th></tr>
+</thead>
+<tbody></tbody>
+</table>
 </main>
 <script>
 const paidInvoices = new Set();

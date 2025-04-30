@@ -1,39 +1,49 @@
 <!-- File: trip-report.html -->
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trip Expense Report | Coastal Junk Removal</title>
-  <link rel="stylesheet" href="css/styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Trip Expense Report | Coastal Junk Removal</title>
+<link href="/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
-  <main class="trip-report">
-    <header>
-      <h1>Trip Expense Report</h1>
-      <a href="/admin.html">Back to Dashboard</a>
-    </header>
+<main class="trip-report">
 
-    <input type="text" id="tripSearch" placeholder="Search by date or notes..." onkeyup="filterTrips()" style="margin-bottom: 10px; padding: 8px; width: 100%;">
+<header class="navbar">
+<a class="logo" href="/index.html">
+<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
+</a>
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="nav-links" id="navMenu">
+<a href="/index.html">Home</a>
+<a href="/junk-removal.html">Junk Removal</a>
+<a href="/moving-services.html">Moving Services</a>
+<a href="/contact.html">Contact</a>
+</nav>
+</header>
 
-    <table id="tripTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Miles</th>
-          <th>Fuel</th>
-          <th>Landfill Trips</th>
-          <th>Maintenance</th>
-          <th>Labor Hours</th>
-          <th>Total</th>
-          <th>Notes</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
-
-  <script>
+<input id="tripSearch" onkeyup="filterTrips()" placeholder="Search by date or notes..." style="margin-bottom: 10px; padding: 8px; width: 100%;" type="text"/>
+<table id="tripTable">
+<thead>
+<tr>
+<th>Date</th>
+<th>Miles</th>
+<th>Fuel</th>
+<th>Landfill Trips</th>
+<th>Maintenance</th>
+<th>Labor Hours</th>
+<th>Total</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</main>
+<script>
   let invoices = [];
   let paidInvoices = new Set();
 
@@ -116,5 +126,7 @@
 
   loadInvoices();
 </script>
-</body>
+<script>function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('active');
+}</script></body>
 </html>

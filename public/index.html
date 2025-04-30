@@ -1,61 +1,53 @@
 <!-- File: /public/index.html -->
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coastal Junk Removal | Premium Service</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Coastal Junk Removal | Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
 
 <header class="navbar">
-  <img src="/assets/logo.png" alt="Coastal Junk Removal Logo" style="height: 50px;">
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <nav class="nav-links" id="navMenu">
-    <a href="/index.html">Home</a>
-    <a href="/junk-removal.html">Junk Removal</a>
-    <a href="/moving-services.html">Moving Services</a>
-    <a href="/contact.html">Contact</a>
-    <a href="/login.html">Admin</a>
-  </nav>
+<a class="logo" href="/index.html">
+<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
+</a>
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="nav-links" id="navMenu">
+<a href="/index.html">Home</a>
+<a href="/junk-removal.html">Junk Removal</a>
+<a href="/moving-services.html">Moving Services</a>
+<a href="/contact.html">Contact</a>
+</nav>
 </header>
 
-<section class="hero">
-  <div class="hero-content">
-    <h1>Junk Removal & Moving</h1>
-    <p>White-Glove Service for Homes, Estates, and Businesses across Coastal Virginia.</p>
-    <a href="/contact.html" class="cta-button">Get a Free Estimate</a>
-  </div>
+<section class="hero" style="background: url('/assets/hero.png') center/cover no-repeat; padding: 6rem 2rem; text-align: center;">
+<h1 style="font-size: 2.75rem; margin-bottom: 1rem;">Junk Removal &amp; Moving</h1>
+<p style="font-size: 1.2rem; max-width: 650px; margin: auto; color: #ccc;">Serving homes, businesses, and estates across Coastal Virginia with care and speed.</p>
+<a class="cta-button" href="/contact.html" style="margin-top: 2rem; display: inline-block;">Get a Free Estimate</a>
 </section>
-
-<section class="services">
-  <div class="service">
-    <h2>Junk Removal Services</h2>
-    <p>From estate cleanouts to appliance hauling, Coastal Junk Removal provides discreet, premium junk removal tailored for high-end clients. Available throughout Newport News, Hampton Roads, and beyond.</p>
-    <a href="/junk-removal.html" class="cta-button">Learn More</a>
-  </div>
-  <div class="service">
-    <h2>Moving Services</h2>
-    <p>Relocate with ease. Our moving service ensures careful packing, transportation, and setup for residential and commercial clients seeking a stress-free moving experience.</p>
-    <a href="/moving-services.html" class="cta-button">Explore Moving</a>
-  </div>
-</section>
-
-<footer class="footer">
-  <p>&copy; 2024 Coastal Junk Removal | Premium Hauling & Moving Solutions</p>
+<main style="padding: 2rem; max-width: 900px; margin: auto;">
+<h2 style="text-align: center; margin-bottom: 2rem;">Why Choose Us?</h2>
+<ul style="line-height: 2; list-style: none; padding-left: 0;">
+<li><strong>✓</strong> Fast, on-time service</li>
+<li><strong>✓</strong> Friendly and respectful crew</li>
+<li><strong>✓</strong> Clean, modern trucks and equipment</li>
+<li><strong>✓</strong> Eco-conscious disposal and donations</li>
+<li><strong>✓</strong> Local experts serving Coastal Virginia</li>
+</ul>
+</main>
+<footer>
+<p>© 2024 Coastal Junk Removal | Clean Spaces, Professional Service</p>
 </footer>
-
 <script>
 function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('active');
 }
 </script>
-
 </body>
 </html>

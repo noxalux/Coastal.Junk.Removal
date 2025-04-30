@@ -1,14 +1,15 @@
 <!-- File: /public/invoice.html -->
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Invoice | Coastal Junk Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Invoice | Coastal Junk Removal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="/css/styles.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<style>
     body {
       margin: 0;
       background: #000;
@@ -79,57 +80,54 @@
   </style>
 </head>
 <body>
+
 <header class="navbar">
-  <div class="logo">Coastal Junk Removal</div>
-  <div class="hamburger" onclick="toggleMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <nav class="nav-links" id="navMenu">
-    <a href="/index.html">Home</a>
-    <a href="/junk-removal.html">Junk Removal</a>
-    <a href="/moving-services.html">Moving Services</a>
-    <a href="/contact.html">Contact</a>
-  </nav>
+<a class="logo" href="/index.html">
+<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
+</a>
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="nav-links" id="navMenu">
+<a href="/index.html">Home</a>
+<a href="/junk-removal.html">Junk Removal</a>
+<a href="/moving-services.html">Moving Services</a>
+<a href="/contact.html">Contact</a>
+</nav>
 </header>
 
 <main class="invoice-container">
-  <section class="invoice-header">
-    <img src="/assets/logo.png" alt="Coastal Junk Removal Logo" class="invoice-logo">
-    <h1>Service Invoice</h1>
-    <form action="/create-checkout-session" method="POST" onsubmit="return checkSignatureBeforePay()">
-      <input type="hidden" name="invoiceId" id="invoiceId" value="">
-      <input type="hidden" name="signatureData" id="signatureData">
-      <button type="submit" id="payButton" disabled>Pay This Invoice</button>
-    </form>
-    <div class="invoice-actions">
-      <button onclick="copyInvoiceLink()">Copy Invoice Link</button>
-      <button onclick="window.print()">Download PDF</button>
-    </div>
-  </section>
-
-  <section id="invoice-content">
-    <!-- Populated via JS -->
-  </section>
-
-  <footer>
-    <p>&copy; 2024 Coastal Junk Removal. Professional Service. Transparent Pricing.</p>
-  </footer>
+<section class="invoice-header">
+<img alt="Coastal Junk Removal Logo" class="invoice-logo" src="/assets/logo.png"/>
+<h1>Service Invoice</h1>
+<form action="/create-checkout-session" method="POST" onsubmit="return checkSignatureBeforePay()">
+<input id="invoiceId" name="invoiceId" type="hidden" value=""/>
+<input id="signatureData" name="signatureData" type="hidden"/>
+<button disabled="" id="payButton" type="submit">Pay This Invoice</button>
+</form>
+<div class="invoice-actions">
+<button onclick="copyInvoiceLink()">Copy Invoice Link</button>
+<button onclick="window.print()">Download PDF</button>
+</div>
+</section>
+<section id="invoice-content">
+<!-- Populated via JS -->
+</section>
+<footer>
+<p>© 2024 Coastal Junk Removal. Professional Service. Transparent Pricing.</p>
+</footer>
 </main>
-
 <!-- Signature Modal -->
 <div id="signatureModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 9999;">
-  <div class="signature-box" style="background: white; padding: 2rem; border-radius: 12px; max-width: 90%; width: 400px;">
-    <h3>Please Sign to Continue</h3>
-    <canvas id="signatureCanvas" style="width: 100%; height: 200px; border: 1px solid #ccc;"></canvas>
-    <div style="margin-top:1rem; display:flex; justify-content: space-between;">
-      <button onclick="clearSignature()">Clear</button>
-      <button onclick="saveSignature()">Confirm Signature</button>
-    </div>
-  </div>
+<div class="signature-box" style="background: white; padding: 2rem; border-radius: 12px; max-width: 90%; width: 400px;">
+<h3>Please Sign to Continue</h3>
+<canvas id="signatureCanvas" style="width: 100%; height: 200px; border: 1px solid #ccc;"></canvas>
+<div style="margin-top:1rem; display:flex; justify-content: space-between;">
+<button onclick="clearSignature()">Clear</button>
+<button onclick="saveSignature()">Confirm Signature</button>
 </div>
-
+</div>
+</div>
 <script>
 function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('active');

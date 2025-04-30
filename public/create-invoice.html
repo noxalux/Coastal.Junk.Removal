@@ -1,15 +1,16 @@
 <!-- File: /public/create-invoice.html -->
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
-  <title>Create Invoice | Coastal Junk Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
-  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="noindex, nofollow" name="robots"/>
+<title>Create Invoice | Coastal Junk Removal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="/css/styles.css" rel="stylesheet"/>
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&amp;libraries=places"></script>
+<style>
     body {
       background: #000;
       color: #fff;
@@ -130,104 +131,101 @@
   </style>
 </head>
 <body>
+
 <header class="navbar">
-  <div class="logo">Coastal Junk Admin</div>
-  <nav>
-    <a href="/admin.html">Dashboard</a>
-    <a href="/create-invoice.html">New Invoice</a>
-    <a href="/index.html">Home</a>
-    <a href="/logout">Logout</a>
-  </nav>
+<a class="logo" href="/index.html">
+<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
+</a>
+<div class="hamburger" onclick="toggleMenu()">
+<span></span><span></span><span></span>
+</div>
+<nav class="nav-links" id="navMenu">
+<a href="/index.html">Home</a>
+<a href="/junk-removal.html">Junk Removal</a>
+<a href="/moving-services.html">Moving Services</a>
+<a href="/contact.html">Contact</a>
+</nav>
 </header>
 
 <main class="invoice-builder">
-  <h1>Create New Invoice</h1>
-  <form action="/save-invoice" method="POST" enctype="multipart/form-data" onsubmit="prepareSignature()">
-
-    <fieldset>
-      <legend>Client Info</legend>
-      <label>Full Name <input type="text" name="name" required /></label>
-      <label>Email <input type="email" name="email" required /></label>
-      <label>Phone <input type="tel" name="phone" required /></label>
-      <label>Service Address <input type="text" name="address" required /></label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Service Type</legend>
-      <label>Truck Load & Moving Services
+<h1>Create New Invoice</h1>
+<form action="/save-invoice" enctype="multipart/form-data" method="POST" onsubmit="prepareSignature()">
+<fieldset>
+<legend>Client Info</legend>
+<label>Full Name <input name="name" required="" type="text"/></label>
+<label>Email <input name="email" required="" type="email"/></label>
+<label>Phone <input name="phone" required="" type="tel"/></label>
+<label>Service Address <input name="address" required="" type="text"/></label>
+</fieldset>
+<fieldset>
+<legend>Service Type</legend>
+<label>Truck Load &amp; Moving Services
         <select name="load">
-          <option value="1/4">1/4 Truck Load - $85</option>
-          <option value="1/2">1/2 Truck Load - $160</option>
-          <option value="full">Full Truck Load - $275</option>
-          <option value="studio-move">Studio Apartment Move - $250</option>
-          <option value="1br-move">1 Bedroom Apartment Move - $375</option>
-          <option value="2br-move">2 Bedroom Move - $550</option>
-          <option value="3br-move">3 Bedroom House Move - $725</option>
-          <option value="office-move">Office Relocation - $650</option>
-          <option value="storage-move">Storage Unit Cleanout - $325</option>
-          <option value="estate-cleanout">Estate Cleanout - $900</option>
-          <option value="long-distance">Long Distance Move - $1500+</option>
-        </select>
-      </label>
-      <label>Quantity <input type="number" name="loadQty" min="1" value="1" /></label>
-      <label>Estimated Travel (Miles) <input type="number" name="miles" id="miles" min="0" value="0" /></label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Charges & Fees</legend>
-      <label>Landfill Trips ($125 each) <input type="number" name="landfillCount" min="0" value="0"></label>
-      <div class="checkbox-group">
-        <input type="checkbox" name="cardFee" id="cardFee" checked>
-        <label for="cardFee">Apply 3% Card Fee</label>
-      </div>
-      <label>Mattress Fee ($90/item) <input type="number" name="mattressCount" min="0" value="0"></label>
-      <label>Labor Charges ($60/hour) <input type="number" name="laborCount" min="0" value="0"></label>
-      <label>Payment Terms
+<option value="1/4">1/4 Truck Load - $85</option>
+<option value="1/2">1/2 Truck Load - $160</option>
+<option value="full">Full Truck Load - $275</option>
+<option value="studio-move">Studio Apartment Move - $250</option>
+<option value="1br-move">1 Bedroom Apartment Move - $375</option>
+<option value="2br-move">2 Bedroom Move - $550</option>
+<option value="3br-move">3 Bedroom House Move - $725</option>
+<option value="office-move">Office Relocation - $650</option>
+<option value="storage-move">Storage Unit Cleanout - $325</option>
+<option value="estate-cleanout">Estate Cleanout - $900</option>
+<option value="long-distance">Long Distance Move - $1500+</option>
+</select>
+</label>
+<label>Quantity <input min="1" name="loadQty" type="number" value="1"/></label>
+<label>Estimated Travel (Miles) <input id="miles" min="0" name="miles" type="number" value="0"/></label>
+</fieldset>
+<fieldset>
+<legend>Charges &amp; Fees</legend>
+<label>Landfill Trips ($125 each) <input min="0" name="landfillCount" type="number" value="0"/></label>
+<div class="checkbox-group">
+<input checked="" id="cardFee" name="cardFee" type="checkbox"/>
+<label for="cardFee">Apply 3% Card Fee</label>
+</div>
+<label>Mattress Fee ($90/item) <input min="0" name="mattressCount" type="number" value="0"/></label>
+<label>Labor Charges ($60/hour) <input min="0" name="laborCount" type="number" value="0"/></label>
+<label>Payment Terms
         <select name="paymentTerms">
-          <option value="due">Due Upon Receipt</option>
-          <option value="net7">Net 7</option>
-          <option value="net15">Net 15</option>
-          <option value="net30">Net 30</option>
-        </select>
-      </label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Additional Line Items</legend>
-      <div id="customItems">
-        <div class="custom-line">
-          <input type="text" name="itemName[]" placeholder="Description">
-          <input type="number" name="itemQty[]" value="1" min="1">
-          <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01">
-        </div>
-      </div>
-      <button type="button" onclick="addLineItem()" class="cta-button">+ Add Charge</button>
-    </fieldset>
-
-    <fieldset>
-      <legend>Photos</legend>
-      <input type="file" name="photos" accept="image/*" multiple>
-    </fieldset>
-
-    <fieldset>
-      <legend>Customer Signature</legend>
-      <canvas id="signaturePad"></canvas>
-      <input type="hidden" name="signatureData" id="signatureData">
-      <button type="button" class="cta-button" onclick="clearSignature()">Clear Signature</button>
-    </fieldset>
-
-    <fieldset style="display:none;">
-      <legend>Trip Expenses (Internal)</legend>
-      <label>Fuel Cost <input type="number" name="fuelCost" step="0.01"></label>
-      <label>Toll Costs <input type="number" name="tolls" step="0.01"></label>
-      <label>Maintenance <input type="number" name="maintenance" step="0.01"></label>
-      <label>Admin Notes <textarea name="notes"></textarea></label>
-    </fieldset>
-
-    <button type="submit" class="cta-button">Generate Invoice</button>
-  </form>
+<option value="due">Due Upon Receipt</option>
+<option value="net7">Net 7</option>
+<option value="net15">Net 15</option>
+<option value="net30">Net 30</option>
+</select>
+</label>
+</fieldset>
+<fieldset>
+<legend>Additional Line Items</legend>
+<div id="customItems">
+<div class="custom-line">
+<input name="itemName[]" placeholder="Description" type="text"/>
+<input min="1" name="itemQty[]" type="number" value="1"/>
+<input name="itemRate[]" placeholder="Rate ($)" step="0.01" type="number"/>
+</div>
+</div>
+<button class="cta-button" onclick="addLineItem()" type="button">+ Add Charge</button>
+</fieldset>
+<fieldset>
+<legend>Photos</legend>
+<input accept="image/*" multiple="" name="photos" type="file"/>
+</fieldset>
+<fieldset>
+<legend>Customer Signature</legend>
+<canvas id="signaturePad"></canvas>
+<input id="signatureData" name="signatureData" type="hidden"/>
+<button class="cta-button" onclick="clearSignature()" type="button">Clear Signature</button>
+</fieldset>
+<fieldset style="display:none;">
+<legend>Trip Expenses (Internal)</legend>
+<label>Fuel Cost <input name="fuelCost" step="0.01" type="number"/></label>
+<label>Toll Costs <input name="tolls" step="0.01" type="number"/></label>
+<label>Maintenance <input name="maintenance" step="0.01" type="number"/></label>
+<label>Admin Notes <textarea name="notes"></textarea></label>
+</fieldset>
+<button class="cta-button" type="submit">Generate Invoice</button>
+</form>
 </main>
-
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
   const canvas = document.getElementById('signaturePad');
@@ -282,5 +280,7 @@
     });
   });
 </script>
-</body>
+<script>function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('active');
+}</script></body>
 </html>
