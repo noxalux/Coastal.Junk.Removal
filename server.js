@@ -3,68 +3,59 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const multer = require('multer');
+
 const invoiceRoutes = require('./routes/invoice');
 const checkoutRoutes = require('./routes/checkout');
 const expenseRoutes = require('./routes/expense');
 const updateNoteRoute = require('./routes/update-note');
-const saveInvoiceRoute = require('./routes/save-invoice');
-const deleteInvoiceRoute = require('./routes/delete-invoice'); // ✅ NEW
+const deleteInvoiceRoute = require('./routes/delete-invoice');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const path = require("path");
-
-// Protect admin.html with session check
-app.use("/admin.html", (req, res, next) => {
-  if (req.session.authenticated) {
-    return next();
-  }
-  return res.redirect("/login.html");
-});
-
-// Optional: Protect create-invoice page too
-app.use("/create-invoice.html", (req, res, next) => {
-  if (req.session.authenticated) {
-    return next();
-  }
-  return res.redirect("/login.html");
-});
-
 
 // Middleware
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Sessions
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 1000 * 60 * 60 }
+  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
 }));
 
-// Admin auth
-const ADMIN_USER = 'noxalux';
-const ADMIN_PASS = 'GmaFeenz95!';
+// 🔒 Protect admin.html
+app.use('/admin.html', (req, res, next) => {
+  if (req.session.authenticated) return next();
+  return res.redirect('/login.html');
+});
 
+// 🔒 Protect create-invoice.html
+app.use('/create-invoice.html', (req, res, next) => {
+  if (req.session.authenticated) return next();
+  return res.redirect('/login.html');
+});
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// 🟢 Login route
 app.post('/login', (req, res) => {
-  const username = req.body.username.toLowerCase();
-  const password = req.body.password;
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
+  const { username, password } = req.body;
+  if (username === 'noxalux' && password === 'GmaFeenz95!') {
     req.session.authenticated = true;
     return res.redirect('/admin.html');
   }
-  return res.send('<script>alert("Invalid credentials"); window.location.href = "/login.html";</script>');
+  res.send('<script>alert("Invalid login"); window.location.href="/login.html";</script>');
 });
 
+// 🔴 Logout route
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
-});
-
-app.use('/admin.html', (req, res, next) => {
-  if (req.session.authenticated) return next();
-  return res.redirect('/login.html');
 });
 
 // Routes
@@ -72,16 +63,19 @@ app.use('/', invoiceRoutes);
 app.use('/', checkoutRoutes);
 app.use('/', expenseRoutes);
 app.use('/', updateNoteRoute);
-app.use('/', saveInvoiceRoute);
-app.use('/', deleteInvoiceRoute); // ✅ NEW
+app.use('/', deleteInvoiceRoute);
 
-// Default
+// Default homepage
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('*', (req, res) => {
+// Catch-all 404
+app.use((req, res) => {
   res.status(404).send('Page not found');
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
