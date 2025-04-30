@@ -2,16 +2,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Invoice | Coastal Junk Removal</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
   <style>
     body {
+      margin: 0;
       background: #000;
       color: #fff;
       font-family: 'Poppins', sans-serif;
-      margin: 0;
     }
     header.navbar {
       display: flex;
@@ -21,109 +23,57 @@
       background: #111;
       border-bottom: 1px solid #222;
     }
-    .navbar .logo {
-      font-weight: 600;
-      color: #fff;
+    .logo {
       font-size: 1.2rem;
+      font-weight: 600;
     }
-    .navbar nav a {
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
       color: #eee;
-      margin-left: 1.5rem;
       text-decoration: none;
     }
-    .navbar nav a:hover {
+    .nav-links a:hover {
       color: #800020;
     }
-    .invoice-container {
-      max-width: 900px;
-      margin: 2rem auto;
-      background: #111;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.05);
-    }
-    .invoice-header {
-      text-align: center;
-    }
-    .invoice-logo {
-      width: 180px;
-      margin-bottom: 1rem;
-    }
-    .cta-button {
-      padding: 1rem;
-      border-radius: 50px;
-      background: #800020;
-      color: white;
-      font-weight: bold;
-      font-size: 1.1rem;
-      border: none;
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
       cursor: pointer;
-      transition: background 0.3s;
-      margin-top: 1rem;
     }
-    table {
-      width: 100%;
-      margin-top: 1rem;
-      border-collapse: collapse;
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
     }
-    table th, table td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #444;
-    }
-    .photo-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    .photo-thumb {
-      width: 160px;
-      border-radius: 8px;
-    }
-    .signature-img {
-      max-width: 300px;
-      margin-top: 1rem;
-    }
-    .invoice-actions {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      margin-top: 1rem;
-    }
-    footer {
-      text-align: center;
-      margin-top: 2rem;
-      color: #888;
-    }
-
-    /* Printable version */
-    @media print {
-      body {
-        background: #fff;
-        color: #000;
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
       }
-      header.navbar, .invoice-actions, footer, #signatureModal {
-        display: none !important;
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: #111;
+        flex-direction: column;
+        align-items: center;
+        display: none;
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        z-index: 999;
       }
-      .invoice-container {
-        box-shadow: none;
-        background: #fff;
-        padding: 1rem;
-        margin: 0;
-        max-width: 100%;
+      .nav-links.active {
+        display: flex;
       }
-      .invoice-logo {
-        width: 120px;
-      }
-      table th, table td {
-        border-bottom: 1px solid #ccc;
-      }
-      .photo-grid {
-        justify-content: start;
-      }
-      .photo-thumb {
-        width: 120px;
+      .nav-links a {
+        margin: 1rem 0;
+        font-size: 1.1rem;
       }
     }
   </style>
@@ -131,7 +81,12 @@
 <body>
 <header class="navbar">
   <div class="logo">Coastal Junk Removal</div>
-  <nav>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <nav class="nav-links" id="navMenu">
     <a href="/index.html">Home</a>
     <a href="/junk-removal.html">Junk Removal</a>
     <a href="/moving-services.html">Moving Services</a>
@@ -146,71 +101,87 @@
     <form action="/create-checkout-session" method="POST" onsubmit="return checkSignatureBeforePay()">
       <input type="hidden" name="invoiceId" id="invoiceId" value="">
       <input type="hidden" name="signatureData" id="signatureData">
-      <button type="submit" id="payButton" class="cta-button" disabled>Pay This Invoice</button>
+      <button type="submit" id="payButton" disabled>Pay This Invoice</button>
     </form>
     <div class="invoice-actions">
-      <button class="cta-button" onclick="copyInvoiceLink()">Copy Invoice Link</button>
-      <button class="cta-button" onclick="window.print()">Download PDF</button>
+      <button onclick="copyInvoiceLink()">Copy Invoice Link</button>
+      <button onclick="window.print()">Download PDF</button>
     </div>
   </section>
 
-  <section id="invoice-content"></section>
+  <section id="invoice-content">
+    <!-- Populated via JS -->
+  </section>
 
   <footer>
     <p>&copy; 2024 Coastal Junk Removal. Professional Service. Transparent Pricing.</p>
   </footer>
 </main>
 
-<div id="signatureModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:9999;">
-  <div style="background:#fff;padding:2rem;border-radius:12px;max-width:90%;">
-    <h3 style="color:#000;">Please Sign to Continue</h3>
-    <canvas id="signatureCanvas" style="border:1px solid #ccc;width:100%;height:200px;"></canvas>
-    <div style="margin-top:1rem;display:flex;justify-content:space-between;">
+<!-- Signature Modal -->
+<div id="signatureModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+  <div class="signature-box" style="background: white; padding: 2rem; border-radius: 12px; max-width: 90%; width: 400px;">
+    <h3>Please Sign to Continue</h3>
+    <canvas id="signatureCanvas" style="width: 100%; height: 200px; border: 1px solid #ccc;"></canvas>
+    <div style="margin-top:1rem; display:flex; justify-content: space-between;">
       <button onclick="clearSignature()">Clear</button>
       <button onclick="saveSignature()">Confirm Signature</button>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
+function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('active');
+}
+
 let signaturePad;
+
 function fetchInvoice() {
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
   if (!id) return;
   document.getElementById('invoiceId').value = id;
-  fetch(`/data/invoices.json`).then(res => res.json()).then(invoices => {
-    const invoice = invoices.find(inv => inv.id === id);
-    if (!invoice) return;
-    document.getElementById('invoice-content').innerHTML = `
-      <p><strong>Invoice #:</strong> ${invoice.id}</p>
-      <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
-      <p><strong>Client:</strong> ${invoice.name}</p>
-      <p><strong>Email:</strong> ${invoice.email}</p>
-      <p><strong>Phone:</strong> ${invoice.phone}</p>
-      <p><strong>Service Address:</strong> ${invoice.address}</p>
-      <p><strong>Service Type:</strong> ${invoice.service}</p>
-      <p><strong>Payment Terms:</strong> ${invoice.paymentTerms}</p>
-      <hr>
-      <table><thead><tr><th>Item</th><th>Total</th></tr></thead>
-      <tbody>${invoice.breakdown.map(i => `<tr><td>${i.label}</td><td>$${i.amount.toFixed(2)}</td></tr>`).join('')}</tbody>
-      <tfoot><tr><th>Total</th><th>$${invoice.total.toFixed(2)}</th></tr></tfoot></table>
-      ${invoice.photos?.length ? `<h3>Job Photos</h3><div class="photo-grid">${invoice.photos.map(p => `<img src="${p}" class="photo-thumb">`).join('')}</div>` : ''}
-      ${invoice.signature ? `<h3>Customer Signature</h3><img src="${invoice.signature}" class="signature-img">` : ''}
-      <hr>
-      <p><strong>Internal Notes</strong></p>
-      <ul>
-        <li><strong>Fuel:</strong> $${invoice.tripExpenses?.fuelCost?.toFixed(2) || 0}</li>
-        <li><strong>Tolls:</strong> $${invoice.tripExpenses?.tolls?.toFixed(2) || 0}</li>
-        <li><strong>Maintenance:</strong> $${invoice.tripExpenses?.maintenance?.toFixed(2) || 0}</li>
-        <li><strong>Admin Notes:</strong> ${invoice.tripExpenses?.notes || '-'}</li>
-      </ul>`;
-  });
+
+  fetch(`/data/invoices.json`)
+    .then(res => res.json())
+    .then(invoices => {
+      const invoice = invoices.find(inv => inv.id === id);
+      if (!invoice) return;
+
+      document.getElementById('invoice-content').innerHTML = `
+        <p><strong>Invoice #:</strong> ${invoice.id}</p>
+        <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+        <p><strong>Client:</strong> ${invoice.name}</p>
+        <p><strong>Email:</strong> ${invoice.email}</p>
+        <p><strong>Phone:</strong> ${invoice.phone}</p>
+        <p><strong>Service Address:</strong> ${invoice.address}</p>
+        <p><strong>Service Type:</strong> ${invoice.service}</p>
+        <p><strong>Payment Terms:</strong> ${invoice.paymentTerms}</p>
+        <hr>
+        <table>
+          <thead><tr><th>Item</th><th>Total</th></tr></thead>
+          <tbody>${invoice.breakdown.map(i => `<tr><td>${i.label}</td><td>$${i.amount.toFixed(2)}</td></tr>`).join('')}</tbody>
+          <tfoot><tr><th>Total</th><th>$${invoice.total.toFixed(2)}</th></tr></tfoot>
+        </table>
+        ${invoice.photos?.length ? `<h3>Job Photos</h3><div class="photo-grid">${invoice.photos.map(p => `<img src="${p}" class="photo-thumb">`).join('')}</div>` : ''}
+        ${invoice.signature ? `<h3>Customer Signature</h3><img src="${invoice.signature}" class="signature-img">` : ''}
+        <hr>
+        <p><strong>Internal Notes</strong></p>
+        <ul>
+          <li><strong>Fuel:</strong> $${invoice.tripExpenses?.fuelCost?.toFixed(2) || 0}</li>
+          <li><strong>Tolls:</strong> $${invoice.tripExpenses?.tolls?.toFixed(2) || 0}</li>
+          <li><strong>Maintenance:</strong> $${invoice.tripExpenses?.maintenance?.toFixed(2) || 0}</li>
+          <li><strong>Admin Notes:</strong> ${invoice.tripExpenses?.notes || '-'}</li>
+        </ul>`;
+    });
 }
+
 function copyInvoiceLink() {
-  navigator.clipboard.writeText(window.location.href).then(() => alert('Invoice link copied!'));
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => alert('Invoice link copied!'));
 }
+
 function checkSignatureBeforePay() {
   const sigData = document.getElementById('signatureData').value;
   if (!sigData) {
@@ -219,9 +190,11 @@ function checkSignatureBeforePay() {
   }
   return true;
 }
+
 function clearSignature() {
   signaturePad.clear();
 }
+
 function saveSignature() {
   if (signaturePad.isEmpty()) {
     alert("Please sign before confirming.");
@@ -232,14 +205,13 @@ function saveSignature() {
   document.getElementById('signatureModal').style.display = 'none';
   document.getElementById('payButton').disabled = false;
 }
+
 window.onload = () => {
   fetchInvoice();
   const canvas = document.getElementById("signatureCanvas");
   signaturePad = new SignaturePad(canvas);
-  const ratio = Math.max(window.devicePixelRatio || 1, 1);
-  canvas.width = canvas.offsetWidth * ratio;
-  canvas.height = 200 * ratio;
-  canvas.getContext("2d").scale(ratio, ratio);
+  canvas.width = canvas.offsetWidth;
+  canvas.height = 200;
 };
 </script>
 </body>

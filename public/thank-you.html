@@ -5,64 +5,93 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thank You | Coastal Junk Removal</title>
-  <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+    gtag('event', 'conversion', {
+      'send_to': 'G-XXXXXXXXXX/thank_you_form_submit'
+    });
+  </script>
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'XXXXXXXXXXXXXXX'); 
+    fbq('track', 'Contact');
+  </script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXX&ev=PageView&noscript=1"/></noscript>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
       background: #000;
-      color: #eee;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
       min-height: 100vh;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       text-align: center;
+      padding: 3rem 1rem;
     }
-    .thank-you {
-      background: #111;
-      padding: 3rem;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
-      max-width: 500px;
-      width: 90%;
-      animation: fadeIn 1s ease;
-    }
-    .thank-you h1 {
-      color: #800020;
+    h1 {
       font-size: 2.5rem;
+      color: #800020;
       margin-bottom: 1rem;
     }
-    .thank-you p {
+    p {
       font-size: 1.2rem;
-      margin-bottom: 2rem;
+      color: #ccc;
     }
-    .thank-you a {
-      display: inline-block;
-      padding: 0.75rem 2rem;
+    .cta-button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
       background: #800020;
       color: white;
-      border-radius: 50px;
-      text-decoration: none;
       font-weight: bold;
-      transition: background 0.3s ease;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-    .thank-you a:hover {
+    .cta-button:hover {
       background: #5a0015;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #777;
+      background: #111;
     }
   </style>
 </head>
 <body>
-<div class="thank-you">
-  <h1>Thank You!</h1>
-  <p>Your payment has been received. We appreciate your business!</p>
-  <a href="/index.html">Return Home</a>
-</div>
+  <main>
+    <div>
+      <h1>Thank You!</h1>
+      <p>Your message has been received. We'll be in touch shortly.</p>
+      <a href="/index.html" class="cta-button">Back to Home</a>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2024 Coastal Junk Removal. All rights reserved.</p>
+  </footer>
 </body>
 </html>

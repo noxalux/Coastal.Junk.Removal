@@ -2,52 +2,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard | Coastal Junk Removal</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .nav-links a {
+      color: #eee;
+      margin-left: 1.5rem;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      color: #800020;
+    }
+    main {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      border: 1px solid #333;
+      text-align: left;
+    }
+    th {
+      background: #111;
+      color: #800020;
+    }
+    button {
+      padding: 0.5rem 0.75rem;
+      background: #800020;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #5a0015;
+    }
+    input, select {
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      background: #222;
+      color: #fff;
+    }
+    input::placeholder {
+      color: #aaa;
+    }
+    .controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
-  <script>
-    if (sessionStorage.getItem('isAdmin') !== 'true') {
-      window.location.href = '/login.html';
-    }
-  </script>
+  <header class="navbar">
+    <div class="logo">Coastal Junk Admin</div>
+    <nav class="nav-links">
+      <a href="/admin.html">Dashboard</a>
+      <a href="/create-invoice.html">New Invoice</a>
+      <a href="/index.html">Home</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
 
-  <main class="admin-dashboard">
-    <header>
-      <h1>Admin Dashboard</h1>
-      <a href="#" onclick="logout()">Logout</a>
-    </header>
+  <main>
+    <h1>Admin Dashboard</h1>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" />
+      <select id="filterStatus" onchange="filterInvoices()">
+        <option value="all">All Invoices</option>
+        <option value="paid">Paid Only</option>
+        <option value="unpaid">Unpaid Only</option>
+      </select>
+      <button onclick="resetFilters()">Reset Filters</button>
+    </div>
 
-    <section>
-      <div style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
-        <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" style="padding: 8px; width: 70%;">
-        <select id="filterStatus" onchange="filterInvoices()" style="padding: 8px; width: 30%;">
-          <option value="all">All Invoices</option>
-          <option value="paid">Paid Only</option>
-          <option value="unpaid">Unpaid Only</option>
-        </select>
-        <button onclick="resetFilters()" style="padding: 8px;">Reset Filters</button>
-      </div>
-      <h2>Invoices</h2>
-
-      <table id="invoiceTable">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Client</th>
-            <th>Amount</th>
-            <th>Date</th>
-            <th>Signature</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Invoices will load here -->
-        </tbody>
-      </table>
-    </section>
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Client</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Loaded via JavaScript -->
+      </tbody>
+    </table>
   </main>
 
   <script>
@@ -64,17 +138,17 @@
       const tbody = document.querySelector('#invoiceTable tbody');
       tbody.innerHTML = data.map(inv => `
         <tr id="row-${inv.id}">
-          <td>${inv.id} ${paidInvoices.has(inv.id) ? '✅' : ''}</td>
+          <td>${inv.id}</td>
           <td>${inv.name}</td>
-          <td>$${inv.total.toFixed(2)}</td>
+          <td>$${inv.total?.toFixed(2) || '0.00'}</td>
           <td>${new Date(inv.date).toLocaleDateString()}</td>
+          <td>${inv.service || '-'}</td>
+          <td>${paidInvoices.has(inv.id) ? '✅' : '❌'}</td>
           <td>
-            <img src="/signatures/${inv.id}.png" alt="Signature" style="height:50px;cursor:pointer;" onclick="window.open('/signatures/${inv.id}.png', '_blank')">
-          </td>
-          <td>
-            <a href="/invoice.html?id=${inv.id}" target="_blank">View</a>
-            <button onclick="copyLink('${inv.id}')">Copy Link</button>
-            <button onclick="markPaid('${inv.id}')">Mark Paid</button>
+            <a href="/invoice.html?id=${inv.id}" target="_blank">View</a> |
+            <button onclick="copyLink('${inv.id}')">Copy</button> |
+            <button onclick="markPaid('${inv.id}')">Paid</button> |
+            <button onclick="deleteInvoice('${inv.id}')">Delete</button>
           </td>
         </tr>
       `).join('');
@@ -82,20 +156,26 @@
 
     function copyLink(id) {
       const url = `${window.location.origin}/invoice.html?id=${id}`;
-      navigator.clipboard.writeText(url)
-        .then(() => alert('Invoice link copied!'))
-        .catch(err => console.error('Error copying link', err));
+      navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
     }
 
     function markPaid(id) {
       paidInvoices.add(id);
-      const row = document.getElementById(`row-${id}`);
-      if (row) {
-        row.style.backgroundColor = '#d4edda';
-        row.style.color = '#155724';
-      }
       renderInvoices(invoices);
-      alert(`Invoice ${id} manually marked as paid!`);
+    }
+
+    function deleteInvoice(id) {
+      if (!confirm('Are you sure you want to permanently delete this invoice?')) return;
+      fetch(`/delete-invoice/${id}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            invoices = invoices.filter(inv => inv.id !== id);
+            renderInvoices(invoices);
+          } else {
+            alert('Failed to delete invoice.');
+          }
+        });
     }
 
     function resetFilters() {
@@ -106,29 +186,27 @@
 
     function filterInvoices() {
       const query = document.getElementById('searchInput').value.toLowerCase();
-      const statusFilter = document.getElementById('filterStatus').value;
-
+      const status = document.getElementById('filterStatus').value;
       const filtered = invoices.filter(inv => {
-        const matchesQuery = inv.name.toLowerCase().includes(query) ||
-                             inv.id.toLowerCase().includes(query) ||
-                             new Date(inv.date).toLocaleDateString().includes(query);
+        const matches = inv.name.toLowerCase().includes(query) ||
+                        inv.id.toLowerCase().includes(query) ||
+                        new Date(inv.date).toLocaleDateString().includes(query);
         const isPaid = paidInvoices.has(inv.id);
-
-        if (statusFilter === 'paid' && !isPaid) return false;
-        if (statusFilter === 'unpaid' && isPaid) return false;
-
-        return matchesQuery;
+        if (status === 'paid' && !isPaid) return false;
+        if (status === 'unpaid' && isPaid) return false;
+        return matches;
       });
-
-      renderInvoices(filtered);
+       renderInvoices(filtered);
     }
 
-    function logout() {
-      sessionStorage.removeItem('isAdmin');
-      window.location.href = '/login.html';
-    }
-
-    loadInvoices();
+     loadInvoices();
   </script>
+  
+  <script>
+    function toggleMenu() {
+      document.getElementById('navMenu').classList.toggle('active');
+    }
+    </script>
+    
 </body>
 </html>

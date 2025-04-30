@@ -2,62 +2,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moving Services | Coastal Junk Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    header.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .nav-links a {
+      color: #eee;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      color: #800020;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: #111;
+        flex-direction: column;
+        align-items: center;
+        display: none;
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        z-index: 999;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .nav-links a {
+        margin: 1rem 0;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
 </head>
-<body>
-
+ <body>
 <header class="navbar">
-  <img src="/assets/logo.png" alt="Coastal Junk Removal Logo" style="height: 50px;">
+  <div class="logo">Coastal Junk Removal</div>
   <div class="hamburger" onclick="toggleMenu()">
     <span></span>
     <span></span>
     <span></span>
   </div>
-  <nav class="nav-links" id="navMenu">
+
+   <nav class="nav-links" id="navMenu">
     <a href="/index.html">Home</a>
     <a href="/junk-removal.html">Junk Removal</a>
     <a href="/moving-services.html">Moving Services</a>
     <a href="/contact.html">Contact</a>
-    <a href="/login.html">Admin</a>
-  </nav>
+   </nav>
 </header>
 
-<section class="hero" style="background: url('/assets/hero.png') center/cover no-repeat;">
-  <div class="hero-content">
-    <h1>Coastal Moving Services</h1>
-    <p>Discreet and efficient relocation services for homes, offices, and properties across Coastal Virginia.</p>
-    <a href="/contact.html" class="cta-button">Book Moving</a>
-  </div>
-</section>
-
-<section class="services">
-  <div class="service">
-    <h2>Professional Residential & Commercial Moving</h2>
-    <p>Our experienced team handles every detail from packing to placement. Whether you're moving into a condo, large estate, or commercial space — we provide on-time, careful and respectful moving service tailored to your schedule and needs.</p>
-    <ul style="text-align:left; padding-left: 1rem;">
-      <li>Full-Service Packing & Unpacking</li>
-      <li>Furniture Protection & Safe Transport</li>
-      <li>Coordinated Scheduling</li>
-      <li>Local & Regional Moves</li>
-      <li>White-Glove Final Placement</li>
+<main>
+  <!-- Add your actual moving service content here -->
+  <section style="padding:2rem;">
+    <h1>Professional Moving Services</h1>
+    <p>We provide tailored, full-service moving for residential and commercial clients across Coastal Virginia. Our experienced team handles your valuables with precision and professionalism.</p>
+    <ul>
+      <li>Studio & Apartment Moves</li>
+      <li>Office Relocations</li>
+      <li>Estate & Long-Distance Moves</li>
+      <li>Storage Unit Clearouts</li>
     </ul>
-    <a href="/contact.html" class="cta-button">Schedule Consultation</a>
-  </div>
-</section>
-
-<footer class="footer">
-  <p>&copy; 2024 Coastal Junk Removal | Moving Services You Can Count On</p>
-</footer>
+    <a href="/contact.html" class="cta-button">Book Moving</a>
+  </section>
+</main>
 
 <script>
 function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('active');
 }
-</script>
-
+ </script>
 </body>
 </html>
