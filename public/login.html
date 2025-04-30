@@ -1,13 +1,12 @@
 <!-- File: /public/login.html -->
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Admin Login | Coastal Junk Removal</title>
-<link href="/css/styles.css" rel="stylesheet"/>
-<style>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Admin Login | Coastal Junk Removal</title>
+  <link href="/css/styles.css" rel="stylesheet" />
+  <style>
     .login-container {
       display: flex;
       flex-direction: column;
@@ -31,6 +30,8 @@
       margin-bottom: 1rem;
       border: none;
       border-radius: 8px;
+      background: #222;
+      color: #fff;
     }
     .login-form button {
       width: 100%;
@@ -46,28 +47,18 @@
 </head>
 <body>
 <div class="login-container">
-<form class="login-form" onsubmit="return handleLogin(event)">
-<h2>Admin Login</h2>
-<input id="username" placeholder="Username" required="" type="text"/>
-<input id="password" placeholder="Password" required="" type="password"/>
-<button type="submit">Login</button>
-</form>
+  <form class="login-form" method="POST" action="/login">
+    <h2>Admin Login</h2>
+    <input name="username" placeholder="Username" required type="text" />
+    <input name="password" placeholder="Password" required type="password" />
+    <button type="submit">Login</button>
+  </form>
 </div>
-<script>
-    function handleLogin(event) {
-      event.preventDefault();
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
 
-      if (user === 'noxalux' && pass === 'GmaFeenz95!') {
-        sessionStorage.setItem('isAdmin', 'true');
-        window.location.href = '/admin.html';
-      } else {
-        alert('Invalid credentials');
-      }
-    }
-  </script>
-<script>function toggleMenu() {
+<script>
+function toggleMenu() {
   document.getElementById('navMenu').classList.toggle('active');
-}</script></body>
+}
+</script>
+</body>
 </html>
