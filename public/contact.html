@@ -7,14 +7,6 @@
   <title>Contact | Coastal Junk Removal</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script>
   <style>
     body {
       margin: 0;
@@ -33,6 +25,7 @@
     .logo {
       font-size: 1.2rem;
       font-weight: 600;
+      color: #fff;
     }
     .nav-links {
       display: flex;
@@ -84,24 +77,28 @@
       }
     }
     .hero {
-      background: url('/assets/contact-hero.jpg') center/cover no-repeat;
-      padding: 6rem 2rem;
+      position: relative;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.85)), url('/assets/contact-hero.jpg') center/cover no-repeat;
+      padding: 8rem 2rem 6rem;
       text-align: center;
+      color: #fff;
     }
     .hero h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
       margin-bottom: 1rem;
     }
     .hero p {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
       color: #ccc;
+      max-width: 600px;
+      margin: auto;
     }
     main {
-      max-width: 600px;
+      max-width: 700px;
       margin: 3rem auto;
       padding: 2rem;
       background: #111;
-      border-radius: 12px;
+      border-radius: 16px;
       box-shadow: 0 0 20px rgba(255,255,255,0.05);
     }
     form {
@@ -170,10 +167,6 @@
 
 <main>
   <form action="https://formsubmit.co/info@coastaljrva.com" method="POST">
-    <input type="hidden" name="_next" value="https://coastaljrva.com/thank-you.html">
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_subject" value="New Contact Submission from CoastalJRVA">
-
     <label>Name
       <input type="text" name="name" required placeholder="Your Full Name">
     </label>
@@ -186,6 +179,7 @@
     <label>Message
       <textarea name="message" rows="5" required placeholder="Tell us about your project or request..."></textarea>
     </label>
+    <input type="hidden" name="_next" value="https://coastaljrva.com/thank-you.html">
     <button type="submit" class="cta-button">Send Message</button>
   </form>
 </main>

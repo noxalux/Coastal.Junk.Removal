@@ -2,19 +2,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard | Coastal Junk Removal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
   <style>
     body {
       margin: 0;
+      font-family: 'Poppins', sans-serif;
       background: #000;
       color: #fff;
-      font-family: 'Poppins', sans-serif;
     }
-    .navbar {
+    header.navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -25,188 +25,192 @@
     .logo {
       font-size: 1.2rem;
       font-weight: 600;
+      color: #fff;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
     }
     .nav-links a {
       color: #eee;
-      margin-left: 1.5rem;
       text-decoration: none;
     }
     .nav-links a:hover {
       color: #800020;
     }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: #fff;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    @media (max-width: 768px) {
+      .hamburger {
+        display: flex;
+      }
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: #111;
+        flex-direction: column;
+        align-items: center;
+        display: none;
+        padding: 1rem 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        z-index: 999;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .nav-links a {
+        margin: 1rem 0;
+        font-size: 1.1rem;
+      }
+    }
     main {
       padding: 2rem;
-      max-width: 1200px;
-      margin: auto;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      margin-top: 2rem;
+      color: #fff;
     }
     th, td {
+      border: 1px solid #444;
       padding: 0.75rem;
-      border: 1px solid #333;
       text-align: left;
     }
     th {
-      background: #111;
-      color: #800020;
+      background-color: #222;
     }
-    button {
-      padding: 0.5rem 0.75rem;
-      background: #800020;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
+    tr:nth-child(even) {
+      background-color: #111;
     }
-    button:hover {
-      background: #5a0015;
+    tr:nth-child(odd) {
+      background-color: #1a1a1a;
     }
-    input, select {
-      padding: 0.5rem;
-      border-radius: 6px;
+    input, select, button {
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 8px;
       border: none;
       background: #222;
       color: #fff;
     }
-    input::placeholder {
-      color: #aaa;
+    button {
+      background-color: #800020;
+      cursor: pointer;
     }
-    .controls {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 1rem;
+    button:hover {
+      background-color: #5a0015;
     }
   </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">Coastal Junk Admin</div>
-    <nav class="nav-links">
-      <a href="/admin.html">Dashboard</a>
-      <a href="/create-invoice.html">New Invoice</a>
-      <a href="/index.html">Home</a>
-      <a href="/logout">Logout</a>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="logo">Coastal Junk Admin</div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <nav class="nav-links" id="navMenu">
+    <a href="/admin.html">Dashboard</a>
+    <a href="/create-invoice.html">New Invoice</a>
+    <a href="/index.html">Home</a>
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
+<main>
+  <h1>Admin Dashboard</h1>
+  <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()">
+  <select id="filterStatus" onchange="filterInvoices()">
+    <option value="all">All Invoices</option>
+    <option value="paid">Paid Only</option>
+    <option value="unpaid">Unpaid Only</option>
+  </select>
+  <button onclick="resetFilters()">Reset Filters</button>
+  <table id="invoiceTable">
+    <thead>
+      <tr><th>ID</th><th>Client</th><th>Amount</th><th>Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+<script>
+const paidInvoices = new Set();
+let invoices = [];
 
-  <main>
-    <h1>Admin Dashboard</h1>
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search by Client, ID or Date" onkeyup="filterInvoices()" />
-      <select id="filterStatus" onchange="filterInvoices()">
-        <option value="all">All Invoices</option>
-        <option value="paid">Paid Only</option>
-        <option value="unpaid">Unpaid Only</option>
-      </select>
-      <button onclick="resetFilters()">Reset Filters</button>
-    </div>
+function toggleMenu() {
+  document.getElementById('navMenu').classList.toggle('active');
+}
 
-    <table id="invoiceTable">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Client</th>
-          <th>Amount</th>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Loaded via JavaScript -->
-      </tbody>
-    </table>
-  </main>
+async function loadInvoices() {
+  const res = await fetch('/data/invoices.json');
+  invoices = await res.json();
+  renderInvoices(invoices);
+}
 
-  <script>
-    let invoices = [];
-    let paidInvoices = new Set();
+function renderInvoices(data) {
+  const tbody = document.querySelector('#invoiceTable tbody');
+  tbody.innerHTML = data.map(inv => `
+    <tr id="row-${inv.id}">
+      <td>${inv.id} ${paidInvoices.has(inv.id) ? '✅' : ''}</td>
+      <td>${inv.name}</td>
+      <td>$${inv.total.toFixed(2)}</td>
+      <td>${new Date(inv.date).toLocaleDateString()}</td>
+      <td>
+        <a href="/invoice.html?id=${inv.id}" target="_blank">View</a>
+        <button onclick="copyLink('${inv.id}')">Copy Link</button>
+        <button onclick="markPaid('${inv.id}')">Mark Paid</button>
+      </td>
+    </tr>
+  `).join('');
+}
 
-    async function loadInvoices() {
-      const res = await fetch('/data/invoices.json');
-      invoices = await res.json();
-      renderInvoices(invoices);
-    }
+function copyLink(id) {
+  const url = `${window.location.origin}/invoice.html?id=${id}`;
+  navigator.clipboard.writeText(url)
+    .then(() => alert('Invoice link copied!'));
+}
 
-    function renderInvoices(data) {
-      const tbody = document.querySelector('#invoiceTable tbody');
-      tbody.innerHTML = data.map(inv => `
-        <tr id="row-${inv.id}">
-          <td>${inv.id}</td>
-          <td>${inv.name}</td>
-          <td>$${inv.total?.toFixed(2) || '0.00'}</td>
-          <td>${new Date(inv.date).toLocaleDateString()}</td>
-          <td>${inv.service || '-'}</td>
-          <td>${paidInvoices.has(inv.id) ? '✅' : '❌'}</td>
-          <td>
-            <a href="/invoice.html?id=${inv.id}" target="_blank">View</a> |
-            <button onclick="copyLink('${inv.id}')">Copy</button> |
-            <button onclick="markPaid('${inv.id}')">Paid</button> |
-            <button onclick="deleteInvoice('${inv.id}')">Delete</button>
-          </td>
-        </tr>
-      `).join('');
-    }
+function markPaid(id) {
+  paidInvoices.add(id);
+  renderInvoices(invoices);
+}
 
-    function copyLink(id) {
-      const url = `${window.location.origin}/invoice.html?id=${id}`;
-      navigator.clipboard.writeText(url).then(() => alert('Link copied!'));
-    }
+function resetFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterStatus').value = 'all';
+  renderInvoices(invoices);
+}
 
-    function markPaid(id) {
-      paidInvoices.add(id);
-      renderInvoices(invoices);
-    }
+function filterInvoices() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const statusFilter = document.getElementById('filterStatus').value;
+  const filtered = invoices.filter(inv => {
+    const matchesQuery = inv.name.toLowerCase().includes(query) ||
+                         inv.id.toLowerCase().includes(query) ||
+                         new Date(inv.date).toLocaleDateString().includes(query);
+    const isPaid = paidInvoices.has(inv.id);
+    if (statusFilter === 'paid' && !isPaid) return false;
+    if (statusFilter === 'unpaid' && isPaid) return false;
+    return matchesQuery;
+  });
+  renderInvoices(filtered);
+}
 
-    function deleteInvoice(id) {
-      if (!confirm('Are you sure you want to permanently delete this invoice?')) return;
-      fetch(`/delete-invoice/${id}`, { method: 'DELETE' })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            invoices = invoices.filter(inv => inv.id !== id);
-            renderInvoices(invoices);
-          } else {
-            alert('Failed to delete invoice.');
-          }
-        });
-    }
-
-    function resetFilters() {
-      document.getElementById('searchInput').value = '';
-      document.getElementById('filterStatus').value = 'all';
-      renderInvoices(invoices);
-    }
-
-    function filterInvoices() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const status = document.getElementById('filterStatus').value;
-      const filtered = invoices.filter(inv => {
-        const matches = inv.name.toLowerCase().includes(query) ||
-                        inv.id.toLowerCase().includes(query) ||
-                        new Date(inv.date).toLocaleDateString().includes(query);
-        const isPaid = paidInvoices.has(inv.id);
-        if (status === 'paid' && !isPaid) return false;
-        if (status === 'unpaid' && isPaid) return false;
-        return matches;
-      });
-       renderInvoices(filtered);
-    }
-
-     loadInvoices();
-  </script>
-  
-  <script>
-    function toggleMenu() {
-      document.getElementById('navMenu').classList.toggle('active');
-    }
-    </script>
-    
+loadInvoices();
+</script>
 </body>
 </html>
