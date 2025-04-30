@@ -11,100 +11,191 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <style>
     body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-    }
-    header.navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: #111;
-      border-bottom: 1px solid #222;
-    }
-    .logo {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-    }
-    .nav-links a {
-      color: #eee;
-      text-decoration: none;
-    }
-    .nav-links a:hover {
-      color: #800020;
-    }
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-    }
-    .hamburger span {
-      width: 25px;
-      height: 3px;
-      background: #fff;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-    @media (max-width: 768px) {
-      .hamburger {
-        display: flex;
-      }
-      .nav-links {
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background: #111;
-        flex-direction: column;
-        align-items: center;
-        display: none;
-        padding: 1rem 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
-        z-index: 999;
-      }
-      .nav-links.active {
-        display: flex;
-      }
-      .nav-links a {
-        margin: 1rem 0;
-        font-size: 1.1rem;
-      }
-    }
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+}
+header.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #111;
+  border-bottom: 1px solid #222;
+}
+.logo img {
+  height: 40px;
+}
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+.nav-links a {
+  color: #eee;
+  text-decoration: none;
+}
+.nav-links a:hover {
+  color: #800020;
+}
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+main.invoice-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #111;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+}
+.invoice-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.invoice-header h1 {
+  font-size: 2rem;
+}
+.invoice-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.invoice-actions button {
+  background: #800020;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  color: white;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.invoice-actions button:hover {
+  background: #5a0015;
+}
+table {
+  width: 100%;
+  margin-top: 1rem;
+  border-collapse: collapse;
+}
+table, th, td {
+  border: 1px solid #333;
+}
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+}
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.photo-thumb {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+.signature-img {
+  margin-top: 1rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: #111;
+    flex-direction: column;
+    align-items: center;
+    display: none;
+    padding: 1rem 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    z-index: 999;
+  }
+  .nav-links.active {
+    display: flex;
+  }
+  .nav-links a {
+    margin: 1rem 0;
+    font-size: 1.1rem;
+  }
+  .invoice-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .cta-button {
+  padding: 1rem 2rem;
+  background: #800020;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.cta-button:hover:not(:disabled) {
+  background: #5a0015;
+}
+
+.cta-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+}
+
   </style>
 </head>
 <body>
 
-<header class="navbar">
-<a class="logo" href="/index.html">
-<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
-</a>
-<div class="hamburger" onclick="toggleMenu()">
-<span></span><span></span><span></span>
-</div>
-<nav class="nav-links" id="navMenu">
-<a href="/index.html">Home</a>
-<a href="/junk-removal.html">Junk Removal</a>
-<a href="/moving-services.html">Moving Services</a>
-<a href="/contact.html">Contact</a>
-</nav>
-</header>
+  <header class="navbar">
+    <a href="/index.html" class="logo">
+      <img src="/assets/logo.png" alt="Coastal Junk Removal" style="height:40px;">
+    </a>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="nav-links" id="navMenu">
+      <a href="/index.html">Home</a>
+      <a href="/junk-removal.html">Junk Removal</a>
+      <a href="/moving-services.html">Moving Services</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+  </header>
+  
 
 <main class="invoice-container">
 <section class="invoice-header">
-<img alt="Coastal Junk Removal Logo" class="invoice-logo" src="/assets/logo.png"/>
 <h1>Service Invoice</h1>
-<form action="/create-checkout-session" method="POST" onsubmit="return checkSignatureBeforePay()">
-<input id="invoiceId" name="invoiceId" type="hidden" value=""/>
-<input id="signatureData" name="signatureData" type="hidden"/>
-<button disabled="" id="payButton" type="submit">Pay This Invoice</button>
+<form action="/create-checkout-session" method="POST" onsubmit="return checkSignatureBeforePay()" style="text-align:center;">
+  <input type="hidden" id="invoiceId" name="invoiceId" value="">
+  <input type="hidden" id="signatureData" name="signatureData">
+  <button id="payButton" type="submit" disabled class="cta-button">Pay This Invoice</button>
 </form>
+
 <div class="invoice-actions">
 <button onclick="copyInvoiceLink()">Copy Invoice Link</button>
 <button onclick="window.print()">Download PDF</button>

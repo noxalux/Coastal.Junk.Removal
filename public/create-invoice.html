@@ -132,25 +132,26 @@
 </head>
 <body>
 
-<header class="navbar">
-<a class="logo" href="/index.html">
-<img alt="Coastal Junk Removal" src="/assets/logo.png" style="height:40px;"/>
-</a>
-<div class="hamburger" onclick="toggleMenu()">
-<span></span><span></span><span></span>
-</div>
-<nav class="nav-links" id="navMenu">
-<a href="/index.html">Home</a>
-<a href="/junk-removal.html">Junk Removal</a>
-<a href="/moving-services.html">Moving Services</a>
-<a href="/contact.html">Contact</a>
-</nav>
-</header>
+  <header class="navbar">
+    <a href="/admin.html" class="logo">
+      <img src="/assets/logo.png" alt="Coastal Junk Removal" style="height:40px;">
+    </a>
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="nav-links" id="navMenu">
+      <a href="/admin.html">Admin Dashboard</a>
+      <a href="/create-invoice.html">Create New Invoice</a>
+      <a href="/index.html">Home</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+  
 
 <main class="invoice-builder">
 <h1>Create New Invoice</h1>
-<form action="/save-invoice" enctype="multipart/form-data" method="POST" onsubmit="prepareSignature()">
-<fieldset>
+<form action="/create-invoice" method="POST" enctype="multipart/form-data" onsubmit="prepareSignature()">
+  <fieldset>
 <legend>Client Info</legend>
 <label>Full Name <input name="name" required="" type="text"/></label>
 <label>Email <input name="email" required="" type="email"/></label>
