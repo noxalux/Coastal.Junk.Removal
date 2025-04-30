@@ -1,4 +1,4 @@
-<!-- File: create-invoice.html -->
+<!-- File: /public/create-invoice.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,150 +6,281 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex, nofollow">
   <title>Create Invoice | Coastal Junk Removal</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+    }
+    header.navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+    .navbar .logo {
+      font-weight: 600;
+      color: #fff;
+      font-size: 1.2rem;
+    }
+    .navbar nav a {
+      color: #eee;
+      margin-left: 1.5rem;
+      text-decoration: none;
+    }
+    .navbar nav a:hover {
+      color: #800020;
+    }
+    form {
+      background: #111;
+      padding: 2.5rem;
+      border-radius: 16px;
+      max-width: 900px;
+      margin: 3rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      box-shadow: 0 0 20px rgba(255,255,255,0.05);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    fieldset {
+      border: none;
+      padding: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    legend {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #800020;
+    }
+    label {
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    input[type="text"], input[type="email"], input[type="tel"], input[type="number"], select, textarea {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #eee;
+      font-size: 1rem;
+    }
+    input::placeholder, textarea::placeholder {
+      color: #aaa;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #800020;
+      cursor: pointer;
+    }
+    canvas {
+      background: #fff;
+      border-radius: 8px;
+      border: 1px solid #999;
+      width: 100%;
+      height: 220px;
+      touch-action: none;
+      box-sizing: border-box;
+    }
+    .cta-button {
+      padding: 1rem;
+      border-radius: 50px;
+      background: #800020;
+      color: white;
+      font-weight: bold;
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 1rem;
+    }
+    .cta-button:hover {
+      background: #5a0015;
+    }
+    .custom-line {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .custom-line input {
+      flex: 1 1 30%;
+      min-width: 100px;
+    }
+  </style>
 </head>
 <body>
-  <main class="invoice-builder">
-    <section>
-      <h1>Create New Invoice</h1>
-      <form action="/create-invoice" method="POST" enctype="multipart/form-data">
-        <fieldset>
-          <legend>Client Information</legend>
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" required>
+<header class="navbar">
+  <div class="logo">Coastal Junk Admin</div>
+  <nav>
+    <a href="/admin.html">Dashboard</a>
+    <a href="/create-invoice.html">New Invoice</a>
+    <a href="/index.html">Home</a>
+    <a href="/logout">Logout</a>
+  </nav>
+</header>
 
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
+<main class="invoice-builder">
+  <h1>Create New Invoice</h1>
+  <form action="/save-invoice" method="POST" enctype="multipart/form-data" onsubmit="prepareSignature()">
 
-          <label for="phone">Phone</label>
-          <input type="tel" id="phone" name="phone" required>
+    <fieldset>
+      <legend>Client Info</legend>
+      <label>Full Name <input type="text" name="name" required /></label>
+      <label>Email <input type="email" name="email" required /></label>
+      <label>Phone <input type="tel" name="phone" required /></label>
+      <label>Service Address <input type="text" name="address" required /></label>
+    </fieldset>
 
-          <label for="address">Service Address</label>
-          <input type="text" id="address" name="address" required>
-        </fieldset>
+    <fieldset>
+      <legend>Service Type</legend>
+      <label>Truck Load & Moving Services
+        <select name="load">
+          <option value="1/4">1/4 Truck Load - $85</option>
+          <option value="1/2">1/2 Truck Load - $160</option>
+          <option value="full">Full Truck Load - $275</option>
+          <option value="studio-move">Studio Apartment Move - $250</option>
+          <option value="1br-move">1 Bedroom Apartment Move - $375</option>
+          <option value="2br-move">2 Bedroom Move - $550</option>
+          <option value="3br-move">3 Bedroom House Move - $725</option>
+          <option value="office-move">Office Relocation - $650</option>
+          <option value="storage-move">Storage Unit Cleanout - $325</option>
+          <option value="estate-cleanout">Estate Cleanout - $900</option>
+          <option value="long-distance">Long Distance Move - $1500+</option>
+        </select>
+      </label>
+      <label>Quantity <input type="number" name="loadQty" min="1" value="1" /></label>
+      <label>Estimated Travel (Miles) <input type="number" name="miles" id="miles" min="0" value="0" /></label>
+    </fieldset>
 
-        <fieldset>
-          <legend>Service Details</legend>
+    <fieldset>
+      <legend>Charges & Fees</legend>
+      <label>Landfill Trips ($125 each) <input type="number" name="landfillCount" min="0" value="0"></label>
+      <div class="checkbox-group">
+        <input type="checkbox" name="cardFee" id="cardFee" checked>
+        <label for="cardFee">Apply 3% Card Fee</label>
+      </div>
+      <label>Mattress Fee ($90/item) <input type="number" name="mattressCount" min="0" value="0"></label>
+      <label>Labor Charges ($60/hour) <input type="number" name="laborCount" min="0" value="0"></label>
+      <label>Payment Terms
+        <select name="paymentTerms">
+          <option value="due">Due Upon Receipt</option>
+          <option value="net7">Net 7</option>
+          <option value="net15">Net 15</option>
+          <option value="net30">Net 30</option>
+        </select>
+      </label>
+    </fieldset>
 
-          <label for="service">Service Type</label>
-          <select id="service" name="service">
-            <option value="junk">Junk Removal</option>
-            <option value="moving">Moving Services</option>
-          </select>
+    <fieldset>
+      <legend>Additional Line Items</legend>
+      <div id="customItems">
+        <div class="custom-line">
+          <input type="text" name="itemName[]" placeholder="Description">
+          <input type="number" name="itemQty[]" value="1" min="1">
+          <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01">
+        </div>
+      </div>
+      <button type="button" onclick="addLineItem()" class="cta-button">+ Add Charge</button>
+    </fieldset>
 
-          <label for="load">Truck Load</label>
-          <select id="load" name="load">
-            <option value="1/4">1/4 Load - $60</option>
-            <option value="1/2">1/2 Load - $90</option>
-            <option value="full">Full Load - $150</option>
-          </select>
+    <fieldset>
+      <legend>Photos</legend>
+      <input type="file" name="photos" accept="image/*" multiple>
+    </fieldset>
 
-          <label for="loadQty">Truck Load Quantity</label>
-          <input type="number" id="loadQty" name="loadQty" min="1" value="1">
+    <fieldset>
+      <legend>Customer Signature</legend>
+      <canvas id="signaturePad"></canvas>
+      <input type="hidden" name="signatureData" id="signatureData">
+      <button type="button" class="cta-button" onclick="clearSignature()">Clear Signature</button>
+    </fieldset>
 
-          <label for="miles">Travel Distance (miles)</label>
-          <input type="number" id="miles" name="miles" min="0" value="0">
-        </fieldset>
+    <fieldset style="display:none;">
+      <legend>Trip Expenses (Internal)</legend>
+      <label>Fuel Cost <input type="number" name="fuelCost" step="0.01"></label>
+      <label>Toll Costs <input type="number" name="tolls" step="0.01"></label>
+      <label>Maintenance <input type="number" name="maintenance" step="0.01"></label>
+      <label>Admin Notes <textarea name="notes"></textarea></label>
+    </fieldset>
 
-        <fieldset>
-          <legend>Extras</legend>
-          <label for="landfillCount">Landfill Trips ($125/trip)</label>
-          <input type="number" id="landfillCount" name="landfillCount" min="0" value="1">
+    <button type="submit" class="cta-button">Generate Invoice</button>
+  </form>
+</main>
 
-          <label for="cardFee">Apply 3% Card Fee?</label>
-          <input type="checkbox" id="cardFee" name="cardFee" checked>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script>
+  const canvas = document.getElementById('signaturePad');
+  const sigPad = new SignaturePad(canvas, {
+    minWidth: 1.5,
+    maxWidth: 2.5,
+    penColor: "#000"
+  });
+  function resizeCanvas() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = 220 * ratio;
+    canvas.getContext("2d").scale(ratio, ratio);
+    sigPad.clear();
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+  function prepareSignature() {
+    document.getElementById('signatureData').value = sigPad.toDataURL();
+  }
+  function clearSignature() {
+    sigPad.clear();
+  }
+  function addLineItem() {
+    const wrapper = document.getElementById('customItems');
+    const div = document.createElement('div');
+    div.className = 'custom-line';
+    div.innerHTML = `
+      <input type="text" name="itemName[]" placeholder="Description">
+      <input type="number" name="itemQty[]" value="1" min="1">
+      <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01">
+    `;
+    wrapper.appendChild(div);
+  }
 
-          <label for="paymentTerms">Payment Terms</label>
-          <select id="paymentTerms" name="paymentTerms">
-            <option value="due">Due Upon Receipt</option>
-            <option value="net7">Net 7</option>
-            <option value="net15">Net 15</option>
-            <option value="net30">Net 30</option>
-          </select>
-        </fieldset>
-
-        <fieldset>
-          <legend>Custom Charges</legend>
-          <div id="customItems">
-            <div class="custom-line">
-              <input type="text" name="itemName[]" placeholder="Service/Item" />
-              <input type="number" name="itemQty[]" placeholder="Qty" value="1" min="1" />
-              <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01" />
-            </div>
-          </div>
-          <button type="button" onclick="addLineItem()">Add Another Charge</button>
-        </fieldset>
-
-        <fieldset>
-          <legend>Photos</legend>
-          <label for="photos">Upload up to 3 Photos</label>
-          <input type="file" id="photos" name="photos" accept="image/*" multiple>
-        </fieldset>
-
-        <fieldset>
-          <legend>Customer Signature</legend>
-          <canvas id="signaturePad" width="300" height="150" style="border:1px solid #ccc;"></canvas>
-          <input type="hidden" name="signatureData" id="signatureData">
-          <button type="button" onclick="clearSignature()">Clear Signature</button>
-        </fieldset>
-
-        <fieldset style="display:none;">
-          <legend>Internal Only: Trip Expenses</legend>
-          <label for="fuelCost">Fuel Cost</label>
-          <input type="number" name="fuelCost" step="0.01" value="0">
-
-          <label for="tolls">Toll Expenses</label>
-          <input type="number" name="tolls" step="0.01" value="0">
-
-          <label for="maintenance">Maintenance</label>
-          <input type="number" name="maintenance" step="0.01" value="0">
-
-          <label for="notes">Admin Notes</label>
-          <textarea name="notes" rows="3"></textarea>
-        </fieldset>
-
-        <button type="submit">Generate Invoice</button>
-      </form>
-    </section>
-  </main>
-
-  <script>
-    const form = document.querySelector('form');
-    form.addEventListener('submit', () => {
-      const canvas = document.getElementById('signaturePad');
-      document.getElementById('signatureData').value = canvas.toDataURL();
+  const originAddress = '58 Colony Square Ct Newport News VA';
+  document.querySelector('input[name="address"]').addEventListener('blur', () => {
+    const dest = document.querySelector('input[name="address"]').value;
+    if (!dest) return;
+    const service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+      origins: [originAddress],
+      destinations: [dest],
+      travelMode: 'DRIVING',
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+    }, (response, status) => {
+      if (status === 'OK') {
+        const distanceText = response.rows[0].elements[0].distance.text;
+        const miles = parseFloat(distanceText.replace(/[^0-9\.]/g, '')) || 0;
+        document.getElementById('miles').value = Math.round(miles);
+      }
     });
-
-    function clearSignature() {
-      const canvas = document.getElementById('signaturePad');
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function addLineItem() {
-      const wrapper = document.getElementById('customItems');
-      const row = document.createElement('div');
-      row.classList.add('custom-line');
-      row.innerHTML = `
-        <input type="text" name="itemName[]" placeholder="Service/Item" />
-        <input type="number" name="itemQty[]" value="1" min="1" />
-        <input type="number" name="itemRate[]" placeholder="Rate ($)" step="0.01" />
-      `;
-      wrapper.appendChild(row);
-    }
-
-    // Enable drawing on canvas
-    const canvas = document.getElementById('signaturePad');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('mousemove', e => {
-      if (!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-      ctx.stroke();
-    });
-  </script>
+  });
+</script>
 </body>
 </html>

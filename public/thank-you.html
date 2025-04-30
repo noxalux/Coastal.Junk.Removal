@@ -1,32 +1,68 @@
-<!-- File: thank-you.html -->
+<!-- File: /public/thank-you.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Thank You | Coastal Junk Removal</title>
-  <meta name="description" content="Thank you for contacting Coastal Junk Removal. We have received your request and will get back to you shortly.">
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .thank-you {
+      background: #111;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+      max-width: 500px;
+      width: 90%;
+      animation: fadeIn 1s ease;
+    }
+    .thank-you h1 {
+      color: #800020;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    .thank-you p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    .thank-you a {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: #800020;
+      color: white;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    .thank-you a:hover {
+      background: #5a0015;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <a href="index.html"><img src="assets/logo.png" alt="Coastal Junk Removal Logo"></a>
-    </div>
-  </header>
-
-  <main>
-    <section>
-      <h1>Thank You!</h1>
-      <p>We’ve received your request. Our team is reviewing your submission and will respond shortly with your personalized quote.</p>
-      <p>Questions? <a href="contact.html">Get in touch here</a>.</p>
-      <a href="index.html" class="btn">Back to Home</a>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2024 Coastal Junk Removal. Professional and courteous service, every time.</p>
-  </footer>
+<div class="thank-you">
+  <h1>Thank You!</h1>
+  <p>Your payment has been received. We appreciate your business!</p>
+  <a href="/index.html">Return Home</a>
+</div>
 </body>
 </html>
