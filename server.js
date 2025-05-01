@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const multer = require('multer');
+const fs = require('fs');
 
 const invoiceRoutes = require('./routes/invoice');
 const checkoutRoutes = require('./routes/checkout');
@@ -11,7 +11,6 @@ const expenseRoutes = require('./routes/expense');
 const updateNoteRoute = require('./routes/update-note');
 const deleteInvoiceRoute = require('./routes/delete-invoice');
 const saveInvoiceRoute = require('./routes/save-invoice');
-app.use('/', saveInvoiceRoute);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,45 +18,45 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Sessions
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+  cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
-// 🔒 Protect admin.html
-app.use('/admin.html', (req, res, next) => {
-  if (req.session.authenticated) return next();
-  return res.redirect('/login.html');
-});
+// Admin credentials
+const ADMIN_USER = 'noxalux';
+const ADMIN_PASS = 'GmaFeenz95!';
 
-// 🔒 Protect create-invoice.html
-app.use('/create-invoice.html', (req, res, next) => {
-  if (req.session.authenticated) return next();
-  return res.redirect('/login.html');
-});
-
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// 🟢 Login route
+// Login route
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  if (username === 'noxalux' && password === 'GmaFeenz95!') {
+  const username = req.body.username.toLowerCase();
+  const password = req.body.password;
+
+  if (username === ADMIN_USER && password === ADMIN_PASS) {
     req.session.authenticated = true;
     return res.redirect('/admin.html');
+  } else {
+    return res.send('<script>alert("Invalid credentials"); window.location.href = "/login.html";</script>');
   }
-  res.send('<script>alert("Invalid login"); window.location.href="/login.html";</script>');
 });
 
-// 🔴 Logout route
+// Logout route
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
+});
+
+// Protect admin page
+app.use('/admin.html', (req, res, next) => {
+  if (req.session.authenticated) {
+    return next();
+  } else {
+    return res.redirect('/login.html');
+  }
 });
 
 // Routes
@@ -66,18 +65,17 @@ app.use('/', checkoutRoutes);
 app.use('/', expenseRoutes);
 app.use('/', updateNoteRoute);
 app.use('/', deleteInvoiceRoute);
+app.use('/', saveInvoiceRoute);
 
-// Default homepage
+// Default route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Catch-all 404
-app.use((req, res) => {
+// Catch-all
+app.get('*', (req, res) => {
   res.status(404).send('Page not found');
 });
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
