@@ -3,22 +3,22 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
-const fs = require('fs');
 
 const invoiceRoutes = require('./routes/invoice');
 const checkoutRoutes = require('./routes/checkout');
 const expenseRoutes = require('./routes/expense');
 const updateNoteRoute = require('./routes/update-note');
-const deleteInvoiceRoute = require('./routes/delete-invoice');
 const saveInvoiceRoute = require('./routes/save-invoice');
+const deleteInvoiceRoute = require('./routes/delete-invoice');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
@@ -50,32 +50,30 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// Protect admin page
-app.use('/admin.html', (req, res, next) => {
-  if (req.session.authenticated) {
-    return next();
-  } else {
-    return res.redirect('/login.html');
-  }
+// Protect admin pages
+app.use(['/admin.html', '/create-invoice.html'], (req, res, next) => {
+  if (req.session.authenticated) return next();
+  return res.redirect('/login.html');
 });
 
 // Routes
 app.use('/', invoiceRoutes);
+app.use('/', saveInvoiceRoute);
 app.use('/', checkoutRoutes);
 app.use('/', expenseRoutes);
 app.use('/', updateNoteRoute);
 app.use('/', deleteInvoiceRoute);
-app.use('/', saveInvoiceRoute);
 
 // Default route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Catch-all
+// 404 fallback
 app.get('*', (req, res) => {
   res.status(404).send('Page not found');
 });
 
-// Start server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
