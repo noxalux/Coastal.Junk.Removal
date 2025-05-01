@@ -6,8 +6,11 @@ const router = express.Router();
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 
-// Storage for photos
-const upload = multer({ dest: path.join(__dirname, '../public/uploads/') });
+// Storage setup
+const UPLOADS_DIR = path.join(__dirname, '../public/uploads');
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+const upload = multer({ dest: UPLOADS_DIR });
 
 router.post('/save-invoice', upload.array('photos', 3), (req, res) => {
   try {
@@ -24,7 +27,6 @@ router.post('/save-invoice', upload.array('photos', 3), (req, res) => {
 
     const breakdown = [];
     let total = 0;
-
     const PRICES = {
       '1/4': 85, '1/2': 160, 'full': 275,
       'studio-move': 250, '1br-move': 375, '2br-move': 550,
@@ -35,24 +37,40 @@ router.post('/save-invoice', upload.array('photos', 3), (req, res) => {
     const invoiceId = uuidv4();
     const date = new Date().toISOString();
 
+    // Load type
     const parsedLoadQty = parseInt(loadQty) || 1;
     const loadRate = PRICES[load] || 0;
     const loadTotal = loadRate * parsedLoadQty;
     breakdown.push({ label: `${load} x${parsedLoadQty}`, amount: loadTotal });
     total += loadTotal;
 
+    // Mileage
+    const mileageCost = parseFloat(miles || 0) * 2;
+    if (mileageCost > 0) {
+      breakdown.push({ label: `Travel (${miles} mi @ $2)`, amount: mileageCost });
+      total += mileageCost;
+    }
+
+    // Fees
     const landfillTotal = 125 * (parseInt(landfillCount) || 0);
-    if (landfillTotal > 0) breakdown.push({ label: 'Landfill Trips', amount: landfillTotal });
-    total += landfillTotal;
+    if (landfillTotal > 0) {
+      breakdown.push({ label: `Landfill Fee x${landfillCount}`, amount: landfillTotal });
+      total += landfillTotal;
+    }
 
     const mattressTotal = 90 * (parseInt(mattressCount) || 0);
-    if (mattressTotal > 0) breakdown.push({ label: 'Mattress Fee', amount: mattressTotal });
-    total += mattressTotal;
+    if (mattressTotal > 0) {
+      breakdown.push({ label: `Mattress Fee x${mattressCount}`, amount: mattressTotal });
+      total += mattressTotal;
+    }
 
     const laborTotal = 60 * (parseInt(laborCount) || 0);
-    if (laborTotal > 0) breakdown.push({ label: 'Labor Charges', amount: laborTotal });
-    total += laborTotal;
+    if (laborTotal > 0) {
+      breakdown.push({ label: `Labor Charges x${laborCount}`, amount: laborTotal });
+      total += laborTotal;
+    }
 
+    // Custom items
     const safeNames = Array.isArray(itemNames) ? itemNames : [itemNames];
     const safeQtys = Array.isArray(itemQtys) ? itemQtys : [itemQtys];
     const safeRates = Array.isArray(itemRates) ? itemRates : [itemRates];
@@ -63,38 +81,43 @@ router.post('/save-invoice', upload.array('photos', 3), (req, res) => {
       const rate = parseFloat(safeRates[i]) || 0;
       const amt = qty * rate;
       if (label && amt > 0) {
-        breakdown.push({ label: `${label} x${qty}`, amount: amt });
+        breakdown.push({ label: `${label} x${qty} @ $${rate}`, amount: amt });
         total += amt;
       }
     }
 
+    // Card fee
     if (cardFee) {
-      const fee = total * 0.03;
-      breakdown.push({ label: 'Card Processing Fee', amount: fee });
+      const fee = +(total * 0.03).toFixed(2);
+      breakdown.push({ label: 'Card Fee (3%)', amount: fee });
       total += fee;
     }
 
+    // Signature
     let signaturePath = null;
     if (signatureData && signatureData.startsWith('data:image')) {
-      const base64Data = signatureData.replace(/^data:image\/png;base64,/, '');
+      const base64 = signatureData.replace(/^data:image\/png;base64,/, '');
       signaturePath = `/uploads/signature-${invoiceId}.png`;
-      fs.writeFileSync(path.join(__dirname, '../public', signaturePath), base64Data, 'base64');
+      fs.writeFileSync(path.join(__dirname, '../public', signaturePath), base64, 'base64');
     }
 
-    const photos = req.files.map(file => '/uploads/' + file.filename);
+    // Uploaded photos
+    const photos = req.files.map(file => `/uploads/${file.filename}`);
 
-    const invoicePath = path.join(__dirname, '../data/invoices.json');
+    // Load existing invoices
+    const dbPath = path.join(__dirname, '../data/invoices.json');
     let invoices = [];
-    if (fs.existsSync(invoicePath)) {
+    if (fs.existsSync(dbPath)) {
       try {
-        const raw = fs.readFileSync(invoicePath);
-        invoices = raw.length ? JSON.parse(raw) : [];
-      } catch (jsonErr) {
-        console.warn('Corrupt invoice.json, resetting...');
+        const raw = fs.readFileSync(dbPath, 'utf-8');
+        invoices = raw.trim().length ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.warn('Corrupt JSON in invoices.json. Resetting file.');
         invoices = [];
       }
     }
 
+    // Final object
     const newInvoice = {
       id: invoiceId,
       date,
@@ -117,8 +140,7 @@ router.post('/save-invoice', upload.array('photos', 3), (req, res) => {
     };
 
     invoices.push(newInvoice);
-    fs.writeFileSync(invoicePath, JSON.stringify(invoices, null, 2));
-
+    fs.writeFileSync(dbPath, JSON.stringify(invoices, null, 2));
     res.redirect(`/invoice.html?id=${invoiceId}`);
   } catch (err) {
     console.error('Invoice save failed:', err);
