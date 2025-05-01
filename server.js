@@ -10,6 +10,8 @@ const checkoutRoutes = require('./routes/checkout');
 const expenseRoutes = require('./routes/expense');
 const updateNoteRoute = require('./routes/update-note');
 const deleteInvoiceRoute = require('./routes/delete-invoice');
+const saveInvoiceRoute = require('./routes/save-invoice');
+app.use('/', saveInvoiceRoute);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
